@@ -1,13 +1,8 @@
----
-title: "facebook_factcheck"
-output: github_document
----
+facebook\_factcheck
+================
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
-
-## R Markdown
+R Markdown
+----------
 
 This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
 
@@ -21,22 +16,40 @@ Which types of stories receive the most engagement from their Facebook followers
 
 Can you replicate BuzzFeed’s findings that “the least accurate pages generated some of the highest numbers of shares, reactions, and comments on Facebook”?
 
-```{r}
+``` r
 library(dplyr)
-library(tidyr)
-library(readr)
-fb<-read.csv("file:///C:/Users/John/Documents/R/fact-checking-facebook-politics-pages/facebook-fact-check.csv")
-
-View(fb)
-
 ```
 
-## Including Plots
+    ## Warning: package 'dplyr' was built under R version 3.4.4
+
+    ## 
+    ## Attaching package: 'dplyr'
+
+    ## The following objects are masked from 'package:stats':
+    ## 
+    ##     filter, lag
+
+    ## The following objects are masked from 'package:base':
+    ## 
+    ##     intersect, setdiff, setequal, union
+
+``` r
+library(tidyr)
+```
+
+    ## Warning: package 'tidyr' was built under R version 3.4.4
+
+``` r
+library(readr)
+```
+
+    ## Warning: package 'readr' was built under R version 3.4.4
+
+Including Plots
+---------------
 
 You can also embed plots, for example:
 
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
+![](facebook_factcheck_files/figure-markdown_github/pressure-1.png)
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
