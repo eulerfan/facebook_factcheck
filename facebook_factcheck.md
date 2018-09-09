@@ -45,6 +45,12 @@ library(readr)
 
     ## Warning: package 'readr' was built under R version 3.4.4
 
+``` r
+fb<-read.csv("file:///C:/Users/John/Documents/R/fact-checking-facebook-politics-pages/facebook-fact-check.csv")
+
+View(fb)
+```
+
 Including Plots
 ---------------
 
