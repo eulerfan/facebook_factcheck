@@ -13,6 +13,32 @@ This is an R Markdown document. Markdown is a simple formatting syntax for autho
 
 When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
 
+need to write a proposal covering these questions:
+What is the problem you want to solve?
+
+Who is your client and why do they care about this problem? In other words, what will your client DO or DECIDE based on your analysis that they wouldn’t have otherwise?
+
+What data are you going to use for this? How will you acquire this data?
+
+In brief, outline your approach to solving this problem (knowing that this might change later).
+
+What are your deliverables? Typically, this would include code, along with a paper and/or a slide deck.
+
+
+DATA WRANGLING:
+
+Clean up your column names to be simple, short and descriptive
+For each column:
+
+Check for missing values and decide what you want to do about them.
+Make sure the values in each column make sense. If you find values that don't, decide what you want to do about those.
+
+Look for outliers (values that are too small or too large). Do they make sense? Do you want to keep them in the data set?
+
+Discuss with your mentor about other data wrangling steps you might need to perform for your specific problem and implement those.
+Save your cleaned up and transformed data set.
+
+
 Possible questions:
 
 How do left, mainstream, and right categories of Facebook pages differ in the stories they share?
@@ -25,7 +51,16 @@ Can you replicate BuzzFeed’s findings that “the least accurate pages generat
 library(dplyr)
 library(tidyr)
 library(readr)
+library(ggplot2)
+
 fb<-read.csv("file:///C:/Users/John/Documents/R/fact-checking-facebook-politics-pages/facebook-fact-check.csv")
+
+str(fb)
+summary(fb)
+#check which types of stories recieved more engagement
+table(fb$Post.Type)
+
+table(fb$Rating)
 
 View(fb)
 
