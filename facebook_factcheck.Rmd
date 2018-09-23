@@ -55,14 +55,34 @@ library(ggplot2)
 
 fb<-read.csv("file:///C:/Users/John/Documents/R/fact-checking-facebook-politics-pages/facebook-fact-check.csv")
 
-str(fb)
-summary(fb)
+#summary(fb)
 #check which types of stories recieved more engagement
 table(fb$Post.Type)
 
 table(fb$Rating)
 
-View(fb)
+#Renameing features
+fb$account_id <- as.character(fb$account_id)
+fb$post_id <- as.character(fb$post_id)
+fb$Post.URL <- as.character(fb$Post.URL)
+fb$Date.Published <- as.Date(fb$Date.Published)
+
+#correcting na
+fb[which(is.na(fb$share_count)),"share_count"]<- 0
+fb[which(is.na(fb$reaction_count)),"reaction_count"]<- 0
+fb[which(is.na(fb$comment_count)),"comment_count"]<- 0
+
+
+ggplot(fb,aes(x=Category, fill= Rating))+
+  geom_bar()
+
+Total_count<- (fb$share_count+ fb$reaction_count+fb$comment_count)
+
+#ggplot(fb, aes(x= Total_count,fill= Date.Published))=
+  geom_histogram()
+
+#str(fb)
+#View(fb)
 
 ```
 
