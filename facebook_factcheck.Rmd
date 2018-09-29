@@ -79,13 +79,22 @@ ggplot(fb,aes(x=Category, fill= Rating))+
 
 Total_count<- (fb$share_count+ fb$reaction_count+fb$comment_count)
 
-ggplot(fb, aes(x= Total_count,fill= Date.Published))=
-  geom_histogram()
+ggplot(fb, aes(x=Rating,y= reaction_count,color= Category))+
+  geom_boxplot(coef=3)
 
+ggplot(fb, aes(x=Date.Published, y= Total_count))+
+  geom_point()
+
+summary(fb)
 str(fb)
 #View(fb)
 
 
+```
+```{r}
+ggplot(fb, aes(x= Page, fill=Rating))+
+  geom_bar()+
+  facet_grid(rows = vars(Page))
 ```
 
 
