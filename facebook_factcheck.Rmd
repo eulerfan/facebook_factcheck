@@ -27,16 +27,8 @@ What are your deliverables? Typically, this would include code, along with a pap
 
 DATA WRANGLING:
 
-Clean up your column names to be simple, short and descriptive
-For each column:
-
-Check for missing values and decide what you want to do about them.
-Make sure the values in each column make sense. If you find values that don't, decide what you want to do about those.
-
-Look for outliers (values that are too small or too large). Do they make sense? Do you want to keep them in the data set?
-
-Discuss with your mentor about other data wrangling steps you might need to perform for your specific problem and implement those.
-Save your cleaned up and transformed data set.
+ The data comes from Kaggle. It was submitted by a journalist from the news site Buzzfeed. The data was not very messy. I did have to rename some features.  Account id, post id, and the post url were integers that were changed to character strings. Date Published was a factor that was changed to a date. 
+     There were a few NAs that had to be changed in the columns share count, reaction count, and the comment count. We changed the NAs	to the median instead of the mean, because the outliers of all these columns caused each of them to be heavily skewed to the right. 
 
 
 Possible questions:
@@ -55,34 +47,13 @@ library(ggplot2)
 
 fb<-read.csv("file:///C:/Users/John/Documents/R/fact-checking-facebook-politics-pages/facebook-fact-check.csv")
 
-#summary(fb)
+summary(fb)
+
 #check which types of stories recieved more engagement
 table(fb$Post.Type)
 
 table(fb$Rating)
 
-#Renameing features
-fb$account_id <- as.character(fb$account_id)
-fb$post_id <- as.character(fb$post_id)
-fb$Post.URL <- as.character(fb$Post.URL)
-fb$Date.Published <- as.Date(fb$Date.Published)
-
-#correcting na
-fb[which(is.na(fb$share_count)),"share_count"]<- 0
-fb[which(is.na(fb$reaction_count)),"reaction_count"]<- 0
-fb[which(is.na(fb$comment_count)),"comment_count"]<- 0
-
-
-ggplot(fb,aes(x=Category, fill= Rating))+
-  geom_bar()
-
-Total_count<- (fb$share_count+ fb$reaction_count+fb$comment_count)
-
-#ggplot(fb, aes(x= Total_count,fill= Date.Published))=
-  geom_histogram()
-
-#str(fb)
-#View(fb)
 
 ```
 
@@ -90,8 +61,32 @@ Total_count<- (fb$share_count+ fb$reaction_count+fb$comment_count)
 
 You can also embed plots, for example:
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+```{r}
+#Renameing features
+fb$account_id <- as.character(fb$account_id)
+fb$post_id <- as.character(fb$post_id)
+fb$Post.URL <- as.character(fb$Post.URL)
+fb$Date.Published <- as.Date(fb$Date.Published)
+
+#correcting na
+fb[which(is.na(fb$share_count)),"share_count"]<- 87
+fb[which(is.na(fb$reaction_count)),"reaction_count"]<- 543
+fb[which(is.na(fb$comment_count)),"comment_count"]<- 131
+
+
+ggplot(fb,aes(x=Category, fill= Rating))+
+  geom_bar()
+
+Total_count<- (fb$share_count+ fb$reaction_count+fb$comment_count)
+
+ggplot(fb, aes(x= Total_count,fill= Date.Published))=
+  geom_histogram()
+
+str(fb)
+#View(fb)
+
+
 ```
+
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
