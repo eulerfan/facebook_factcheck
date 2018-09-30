@@ -92,9 +92,14 @@ str(fb)
 
 ```
 ```{r}
-ggplot(fb, aes(x= Page, fill=Rating))+
+ggplot(fb, aes(x=Page,fill= Rating))+
   geom_bar()+
-  facet_grid(rows = vars(Page))
+  coord_flip()
+
+
+ggplot(fb,aes(x=Post.Type,y= reaction_count, col=Rating))+
+  geom_point()
+
 ```
 
 
