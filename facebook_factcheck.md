@@ -1,16 +1,9 @@
 facebook\_factcheck
 ================
 
-R Markdown
-----------
+need to write a proposal covering these questions: What is the problem you want to solve? The social media world is becoming more and more polarized. One of the early glimpses of this was the 2016 elections. There is a strong element of disinformation throughout social media. This project is based on research done by Buzzzfeed on Facebook leading up to the 2016 presidential elections .That data was acquired over seven week days (September 19 through 23rd and September 26th and 27th, 2016.) The research included
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-need to write a proposal covering these questions: What is the problem you want to solve?
-
-Who is your client and why do they care about this problem? In other words, what will your client DO or DECIDE based on your analysis that they wouldn’t have otherwise?
+Who is your client and why do they care about this problem? In other words, what will your client DO or \`DECIDE based on your analysis that they wouldn’t have otherwise?
 
 What data are you going to use for this? How will you acquire this data?
 
@@ -131,11 +124,6 @@ table(fb$Rating)
     ##               mostly true        no factual content 
     ##                      1669                       264
 
-Including Plots
----------------
-
-You can also embed plots, for example:
-
 ``` r
 #Renameing features
 fb$account_id <- as.character(fb$account_id)
@@ -240,9 +228,19 @@ ggplot(fb, aes(x=Page,fill= Rating))+
 
 ``` r
 ggplot(fb,aes(x=Post.Type,y= reaction_count, col=Rating))+
-  geom_point()
+  geom_point(position = "jitter")
 ```
 
 ![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-3-2.png)
+
+``` r
+ggplot(data=fb)+
+  geom_point(mapping= aes(x=Post.Type, y= Total_count, position= "dodge"))+
+  facet_wrap( ~ Rating,nrow = 2)
+```
+
+    ## Warning: Ignoring unknown aesthetics: position
+
+![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-3-3.png)
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
