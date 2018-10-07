@@ -146,9 +146,12 @@ ggplot(fb,aes(x=Category, fill= Rating))+
 ``` r
 Total_count<- (fb$share_count+ fb$reaction_count+fb$comment_count)
 
-ggplot(fb, aes(x=Rating,y= reaction_count,color= Category))+
-  geom_boxplot(coef=3)
+ggplot(fb,aes(x=Rating,y= reaction_count,color= Category))+
+  geom_boxplot(coef=3, fun = median)+
+  coord_flip()
 ```
+
+    ## Warning: Ignoring unknown parameters: fun
 
 ![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-2-2.png)
 
@@ -227,11 +230,18 @@ ggplot(fb, aes(x=Page,fill= Rating))+
 ![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-3-1.png)
 
 ``` r
+ggplot(fb,aes(Total_count,y= Page,group= reaction_count))+
+  stat_boxplot()
+```
+
+![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-3-2.png)
+
+``` r
 ggplot(fb,aes(x=Post.Type,y= reaction_count, col=Rating))+
   geom_point(position = "jitter")
 ```
 
-![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-3-2.png)
+![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-3-3.png)
 
 ``` r
 ggplot(data=fb)+
@@ -241,6 +251,6 @@ ggplot(data=fb)+
 
     ## Warning: Ignoring unknown aesthetics: position
 
-![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-3-3.png)
+![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-3-4.png)
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
