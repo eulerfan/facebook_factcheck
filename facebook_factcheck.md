@@ -1,27 +1,15 @@
-facebook\_factcheck
+False and Misleading Information on Hyperpartisan Facebook Pages
 ================
 
-need to write a proposal covering these questions: What is the problem you want to solve? The social media world is becoming more and more polarized. One of the early glimpses of this was the 2016 elections. There is a strong element of disinformation throughout social media. This project is based on research done by Buzzzfeed on Facebook leading up to the 2016 presidential elections .That data was acquired over seven week days (September 19 through 23rd and September 26th and 27th, 2016.) The research included
+The social media world is becoming more and more polarized. One of the early glimpses of this was the 2016 elections. There is a strong element of disinformation throughout social media. This project is based on research done by Buzzzfeed on Facebook leading up to the 2016 presidential elections. The data was acquired over seven week days (September 19 through 23rd and September 26th and 27th, 2016.) The research included 1145 posts from mainstream political pages (Politico, CNN, ABC), 666 from right-wing political pages (Freedom Daily, Eagle Rising, Right Wing News), 471 from left-wing pages (The Other 98%, Addicting Info, Occupy Democrats ). The pages were ranked based on: • “Mostly True: The post and any related link or image are based on factual information and portray it accurately. This lets them interpret the event/info in their own way, so long as they do not misrepresent events, numbers, quotes, reactions, etc., or make information up. This rating does not allow for unsupported speculation or claims.
 
-Who is your client and why do they care about this problem? In other words, what will your client DO or \`DECIDE based on your analysis that they wouldn’t have otherwise?
+• “Mixture of True and False: Some elements of the information are factually accurate, but some elements or claims are not. This rating should be used when speculation or unfounded claims are mixed with real events, numbers, quotes, etc., or when the headline of the link being shared makes a false claim but the text of the story is largely accurate. It should also only be used when the unsupported or false information is roughly equal to the accurate information in the post or link. Finally, use this rating for news articles that are based on unconfirmed information.
 
-What data are you going to use for this? How will you acquire this data?
+• “Mostly False: Most or all of the information in the post or in the link being shared is inaccurate. This should also be used when the central claim being made is false.
 
-In brief, outline your approach to solving this problem (knowing that this might change later).
+• “No Factual Content: This rating is used for posts that are pure opinion, comics, satire, or any other posts that do not make a factual claim. This is also the category to use for posts that are of the “Like this if you think...” variety.
 
-What are your deliverables? Typically, this would include code, along with a paper and/or a slide deck.
-
-DATA WRANGLING:
-
-The data comes from Kaggle. It was submitted by a journalist from the news site Buzzfeed. The data was not very messy. I did have to rename some features. Account id, post id, and the post url were integers that were changed to character strings. Date Published was a factor that was changed to a date. There were a few NAs that had to be changed in the columns share count, reaction count, and the comment count. We changed the NAs to the median instead of the mean, because the outliers of all these columns caused each of them to be heavily skewed to the right.
-
-Possible questions:
-
-How do left, mainstream, and right categories of Facebook pages differ in the stories they share?
-
-Which types of stories receive the most engagement from their Facebook followers? Are videos or links more effective for engagement?
-
-Can you replicate BuzzFeed’s findings that “the least accurate pages generated some of the highest numbers of shares, reactions, and comments on Facebook”?
+All nine pages have earned the verified blue checkmark from Facebook. The additional data gathered was Facebook engagement numbers (shares, comments, and reactions). Each posts was noted whether it was a link, photo, video, or text. There were NAs within the Facebook engagement numbers that I replaced with the median of each category. The engagement numbers had some extreme outliers, so the use of the mean did not seem to be the proper method for replacing the NAs.
 
 ``` r
 library(dplyr)
@@ -57,6 +45,19 @@ library(ggplot2)
 ```
 
     ## Warning: package 'ggplot2' was built under R version 3.4.4
+
+``` r
+library(scales)
+```
+
+    ## Warning: package 'scales' was built under R version 3.4.4
+
+    ## 
+    ## Attaching package: 'scales'
+
+    ## The following object is masked from 'package:readr':
+    ## 
+    ##     col_factor
 
 ``` r
 fb<-read.csv("file:///C:/Users/John/Documents/R/fact-checking-facebook-politics-pages/facebook-fact-check.csv")
@@ -138,7 +139,8 @@ fb[which(is.na(fb$comment_count)),"comment_count"]<- 131
 
 
 ggplot(fb,aes(x=Category, fill= Rating))+
-  geom_bar()
+  geom_bar()+
+  scale_y_continuous(labels = scales::percent)
 ```
 
 ![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-2-1.png)
@@ -230,18 +232,15 @@ ggplot(fb, aes(x=Page,fill= Rating))+
 ![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-3-1.png)
 
 ``` r
-ggplot(fb,aes(Total_count,y= Page,group= reaction_count))+
-  stat_boxplot()
-```
+#ggplot(fb,aes(Total_count,group= reaction))+
+  #stat_boxplot()
 
-![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-3-2.png)
 
-``` r
 ggplot(fb,aes(x=Post.Type,y= reaction_count, col=Rating))+
   geom_point(position = "jitter")
 ```
 
-![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-3-3.png)
+![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-3-2.png)
 
 ``` r
 ggplot(data=fb)+
@@ -251,6 +250,36 @@ ggplot(data=fb)+
 
     ## Warning: Ignoring unknown aesthetics: position
 
-![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-3-4.png)
+![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-3-3.png)
+
+``` r
+ggplot(fb,aes(x=Rating, group=Category))+
+  geom_bar(aes(y = ..prop.., fill = factor(..x..)), stat="count") +
+    geom_text(aes( label = scales::percent(..prop..),
+                   y= ..prop.. ), stat= "count", vjust = -.5) +
+    labs(y = "Percent", fill="Rating") +
+    facet_grid(~Category) +
+    scale_y_continuous(labels = scales::percent)+
+  coord_flip()
+```
+
+![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-4-1.png)
+
+``` r
+ggplot(fb, aes(Date.Published, group = Category)) + 
+          geom_bar(aes(y = ..prop.., fill = factor(..x..)), stat="count") + 
+          scale_y_continuous(labels=scales::percent) +
+          ylab("relative frequencies") +
+          facet_grid(Category~.)
+```
+
+![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-4-2.png)
+
+``` r
+ggplot(fb)+
+  geom_point(mapping = aes(x= reaction_count,y= Total_count,color= Rating))
+```
+
+![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-4-3.png)
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
