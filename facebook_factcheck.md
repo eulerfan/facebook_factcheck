@@ -9,7 +9,7 @@ The social media world is becoming more and more polarized. One of the early gli
 
 • “No Factual Content: This rating is used for posts that are pure opinion, comics, satire, or any other posts that do not make a factual claim. This is also the category to use for posts that are of the “Like this if you think...” variety.
 
-All nine pages have earned the verified blue checkmark from Facebook. The additional data gathered was Facebook engagement numbers (shares, comments, and reactions). Each posts was noted whether it was a link, photo, video, or text. There were NAs within the Facebook engagement numbers that I replaced with the median of each category. The engagement numbers had some extreme outliers, so the use of the mean did not seem to be the proper method for replacing the NAs.
+All nine pages have earned the verified blue checkmark from Facebook. The additional data gathered was Facebook engagement numbers (shares, comments, and reactions). Each posts was noted whether it was a link, photo, video, or text The data comes from Kaggle( <https://www.kaggle.com/mrisdal/fact-checking-facebook-politics-pages>.) It was submitted by a journalists from the news site Buzzfeed News and the original story was ( “Hyperpartisan Facebook Pages Are Publishing False And Misleading Information At An Alarming Rate” ) The data was not very messy. I did have to rename some features. Account id, post id, and the post url were integers that were changed to character strings. Date Published was a factor that was changed to a date. There were a few NAs that had to be changed in the columns share count, reaction count, and the comment count. The NAs were changed to the median instead of the mean, because the outliers of all of these columns caused each of them to be heavily skewed to the right.
 
 ``` r
 library(dplyr)
@@ -150,7 +150,7 @@ Total_count<- (fb$share_count+ fb$reaction_count+fb$comment_count)
 
 ggplot(fb,aes(x=Rating,y= reaction_count,color= Category))+
   geom_boxplot(coef=3, fun = median)+
-  coord_flip()
+  coord_cartesian(ylim=c(0,50000))
 ```
 
     ## Warning: Ignoring unknown parameters: fun
@@ -158,11 +158,31 @@ ggplot(fb,aes(x=Rating,y= reaction_count,color= Category))+
 ![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-2-2.png)
 
 ``` r
+ggplot(fb,aes(x=Rating,y= share_count,color= Category))+
+  geom_boxplot(coef=3, fun = median)+
+  coord_cartesian(ylim=c(0,50000))
+```
+
+    ## Warning: Ignoring unknown parameters: fun
+
+![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-2-3.png)
+
+``` r
+ggplot(fb,aes(x=Rating,y= comment_count,color= Category))+
+  geom_boxplot(coef=3, fun = median)+
+  coord_cartesian(ylim=c(0,50000))
+```
+
+    ## Warning: Ignoring unknown parameters: fun
+
+![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-2-4.png)
+
+``` r
 ggplot(fb, aes(x=Date.Published, y= Total_count))+
   geom_point()
 ```
 
-![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-2-3.png)
+![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-2-5.png)
 
 ``` r
 summary(fb)
@@ -267,7 +287,7 @@ ggplot(fb,aes(x=Rating, group=Category))+
 
 ``` r
 ggplot(fb, aes(Date.Published, group = Category)) + 
-          geom_bar(aes(y = ..prop.., fill = factor(..x..)), stat="count") + 
+          geom_bar(aes(y = ..prop..), stat="count") + 
           scale_y_continuous(labels=scales::percent) +
           ylab("relative frequencies") +
           facet_grid(Category~.)
@@ -277,8 +297,13 @@ ggplot(fb, aes(Date.Published, group = Category)) +
 
 ``` r
 ggplot(fb)+
-  geom_point(mapping = aes(x= reaction_count,y= Total_count,color= Rating))
+  geom_point(mapping = aes(x= reaction_count,y= Total_count))+
+  facet_grid(.~Rating)+
+  xlim(0,50000)+
+  ylim(0,50000)
 ```
+
+    ## Warning: Removed 128 rows containing missing values (geom_point).
 
 ![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-4-3.png)
 
