@@ -140,7 +140,10 @@ fb[which(is.na(fb$comment_count)),"comment_count"]<- 131
 
 ggplot(fb,aes(x=Category, fill= Rating))+
   geom_bar()+
-  scale_y_continuous(labels = scales::percent)
+  geom_text(aes( label = scales::percent(..prop..),
+                   y= ..prop.. ), stat= "count", vjust = -.5) +
+  scale_y_continuous()+
+  ggtitle( "Facebook Posts Content Ratings")
 ```
 
 ![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-2-1.png)
@@ -150,7 +153,8 @@ Total_count<- (fb$share_count+ fb$reaction_count+fb$comment_count)
 
 ggplot(fb,aes(x=Rating,y= reaction_count,color= Category))+
   geom_boxplot(coef=3, fun = median)+
-  coord_cartesian(ylim=c(0,50000))
+  coord_cartesian(ylim=c(0,50000))+
+  ggtitle("Ratings vs. Reaction Count")
 ```
 
     ## Warning: Ignoring unknown parameters: fun
@@ -160,7 +164,8 @@ ggplot(fb,aes(x=Rating,y= reaction_count,color= Category))+
 ``` r
 ggplot(fb,aes(x=Rating,y= share_count,color= Category))+
   geom_boxplot(coef=3, fun = median)+
-  coord_cartesian(ylim=c(0,50000))
+  coord_cartesian(ylim=c(0,50000))+
+  ggtitle("Ratings vs. Share Count")
 ```
 
     ## Warning: Ignoring unknown parameters: fun
@@ -170,7 +175,8 @@ ggplot(fb,aes(x=Rating,y= share_count,color= Category))+
 ``` r
 ggplot(fb,aes(x=Rating,y= comment_count,color= Category))+
   geom_boxplot(coef=3, fun = median)+
-  coord_cartesian(ylim=c(0,50000))
+  coord_cartesian(ylim=c(0,50000))+
+  ggtitle("Ratings vs. Comment Count")
 ```
 
     ## Warning: Ignoring unknown parameters: fun
@@ -179,7 +185,8 @@ ggplot(fb,aes(x=Rating,y= comment_count,color= Category))+
 
 ``` r
 ggplot(fb, aes(x=Date.Published, y= Total_count))+
-  geom_point()
+  geom_point()+
+  ggtitle("Total Counts on Posted Dates")
 ```
 
 ![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-2-5.png)
@@ -245,19 +252,18 @@ str(fb)
 
 ``` r
 ggplot(fb, aes(x=Page,fill= Rating))+
+  guides(fill=FALSE)+
   geom_bar()+
-  coord_flip()
+  coord_flip()+
+  ggtitle("Truth Ratings for Indivdual Pages")
 ```
 
 ![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-3-1.png)
 
 ``` r
-#ggplot(fb,aes(Total_count,group= reaction))+
-  #stat_boxplot()
-
-
 ggplot(fb,aes(x=Post.Type,y= reaction_count, col=Rating))+
-  geom_point(position = "jitter")
+  geom_point(position = "jitter")+
+  ggtitle("Truth Ratings Based on Post Type")
 ```
 
 ![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-3-2.png)
@@ -265,7 +271,8 @@ ggplot(fb,aes(x=Post.Type,y= reaction_count, col=Rating))+
 ``` r
 ggplot(data=fb)+
   geom_point(mapping= aes(x=Post.Type, y= Total_count, position= "dodge"))+
-  facet_wrap( ~ Rating,nrow = 2)
+  facet_wrap( ~ Rating,nrow = 2)+
+  ggtitle("Truth Ratings for Post Types")
 ```
 
     ## Warning: Ignoring unknown aesthetics: position
@@ -280,7 +287,9 @@ ggplot(fb,aes(x=Rating, group=Category))+
     labs(y = "Percent", fill="Rating") +
     facet_grid(~Category) +
     scale_y_continuous(labels = scales::percent)+
-  coord_flip()
+  coord_flip()+
+  guides(fill=FALSE)+
+  ggtitle("Percent of Truth Ratings Based on Partisain Leaning")
 ```
 
 ![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-4-1.png)
@@ -290,7 +299,8 @@ ggplot(fb, aes(Date.Published, group = Category)) +
           geom_bar(aes(y = ..prop..), stat="count") + 
           scale_y_continuous(labels=scales::percent) +
           ylab("relative frequencies") +
-          facet_grid(Category~.)
+          facet_grid(Category~.)+
+  ggtitle("Activity of Posts")
 ```
 
 ![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-4-2.png)
@@ -300,7 +310,8 @@ ggplot(fb)+
   geom_point(mapping = aes(x= reaction_count,y= Total_count))+
   facet_grid(.~Rating)+
   xlim(0,50000)+
-  ylim(0,50000)
+  ylim(0,50000)+
+  ggtitle("Reactions of the pages Based On Truth")
 ```
 
     ## Warning: Removed 128 rows containing missing values (geom_point).
