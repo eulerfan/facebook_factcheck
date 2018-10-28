@@ -18,8 +18,13 @@ The pages were ranked based on:
 
 •	“No Factual Content: This rating is used for posts that are pure opinion, comics, satire, or any other posts that do not make a factual claim. This is also the category to use for posts that are of the “Like this if you think...” variety.
 
-All nine pages have earned the verified blue checkmark from Facebook. The additional data gathered was Facebook engagement numbers (shares, comments, and reactions). Each posts was noted whether it was a link, photo, video, or text 
- The data comes from Kaggle( https://www.kaggle.com/mrisdal/fact-checking-facebook-politics-pages.) It was submitted by a journalists from the news site Buzzfeed News and the original story was ( “Hyperpartisan Facebook Pages Are Publishing False And Misleading Information At An Alarming Rate” ) The data was not very messy. I did have to rename some features.  Account id, post id, and the post url were integers that were changed to character strings. Date Published was a factor that was changed to a date. 
+DATA SOURCE:
+
+ All nine pages have earned the verified blue checkmark from Facebook. The additional data gathered was Facebook engagement numbers (shares, comments, and reactions). Each posts was noted whether it was a link, photo, video, or text The data comes from Kaggle( https://www.kaggle.com/mrisdal/fact-checking-facebook-politics-pages.) It was submitted by a journalists from the news site Buzzfeed News and the original story was ( “Hyperpartisan Facebook Pages Are Publishing False And Misleading Information At An Alarming Rate” )
+ 
+DATA WRANGLING:
+
+ The data was not very messy. I did have to rename some features.  Account id, post id, and the post url were integers that were changed to character strings. Date Published was a factor that was changed to a date. 
      There were a few NAs that had to be changed in the columns share count, reaction count, and the comment count. The NAs were changed to the median instead of the mean, because the outliers of all of these columns caused each of them to be heavily skewed to the right. 
 
 ```{r}
@@ -28,6 +33,7 @@ library(tidyr)
 library(readr)
 library(ggplot2)
 library(scales)
+#library(RWeka)
 
 fb<-read.csv("file:///C:/Users/John/Documents/R/fact-checking-facebook-politics-pages/facebook-fact-check.csv")
 
@@ -55,11 +61,8 @@ fb[which(is.na(fb$reaction_count)),"reaction_count"]<- 543
 fb[which(is.na(fb$comment_count)),"comment_count"]<- 131
 
 
-ggplot(fb,aes(x=Category, fill= Rating))+
-  geom_bar()+
-  geom_text(aes( label = scales::percent(..prop..),
-                   y= ..prop.. ), stat= "count", vjust = -.5) +
-  scale_y_continuous()+
+ggplot(fb,aes(x=Category,y = percent(1), fill= Rating))+
+   geom_bar(position = "fill",stat = "identity") +
   ggtitle( "Facebook Posts Content Ratings")
 
 Total_count<- (fb$share_count+ fb$reaction_count+fb$comment_count)
@@ -108,6 +111,17 @@ ggplot(data=fb)+
 
 ```
 ```{r}
+ggplot(fb,aes(x=Rating, group=Page))+
+  geom_bar(aes(y = ..prop.., fill = factor(..x..)), stat="count") +
+    geom_text(aes( label = scales::percent(..prop..),
+                   y= ..prop.. ), stat= "count", vjust = -.5) +
+    labs(y = "Percent", fill="Rating") +
+    facet_grid(~Page) +
+    scale_y_continuous(labels = scales::percent)+
+  coord_flip()+
+  guides(fill=FALSE)+
+  ggtitle("Percent of Truth Ratings Based on Pages")
+
 ggplot(fb,aes(x=Rating, group=Category))+
   geom_bar(aes(y = ..prop.., fill = factor(..x..)), stat="count") +
     geom_text(aes( label = scales::percent(..prop..),
@@ -131,6 +145,7 @@ ggplot(fb)+
   facet_grid(.~Rating)+
   xlim(0,50000)+
   ylim(0,50000)+
+  labs(x="")+
   ggtitle("Reactions of the pages Based On Truth")
 
 ```
