@@ -102,7 +102,10 @@ ggplot(fb, aes(x=Page,fill= Rating))+
 
 ggplot(fb,aes(x=Post.Type,y= reaction_count, col=Rating))+
   geom_point(position = "jitter")+
+  facet_grid(~ Rating)+
+  coord_cartesian(ylim=c(0,50000))+
   ggtitle("Truth Ratings Based on Post Type")
+
 
 ggplot(data=fb)+
   geom_point(mapping= aes(x=Post.Type, y= Total_count, position= "dodge"))+
@@ -120,7 +123,9 @@ ggplot(fb,aes(x=Rating, group=Page))+
     scale_y_continuous(labels = scales::percent)+
   coord_flip()+
   guides(fill=FALSE)+
-  ggtitle("Percent of Truth Ratings Based on Pages")
+  ggtitle("Percent of Truth Ratings Based on Pages")+
+  theme(axis.ticks = element_blank(), 
+        axis.text = element_blank())
 
 ggplot(fb,aes(x=Rating, group=Category))+
   geom_bar(aes(y = ..prop.., fill = factor(..x..)), stat="count") +
@@ -131,7 +136,9 @@ ggplot(fb,aes(x=Rating, group=Category))+
     scale_y_continuous(labels = scales::percent)+
   coord_flip()+
   guides(fill=FALSE)+
-  ggtitle("Percent of Truth Ratings Based on Partisain Leaning")
+  ggtitle("Percent of Truth Ratings Based on Partisain Leaning")+
+  theme(axis.ticks = element_blank(), 
+        axis.text = element_blank())
 
 ggplot(fb, aes(Date.Published, group = Category)) + 
           geom_bar(aes(y = ..prop..), stat="count") + 
@@ -146,6 +153,8 @@ ggplot(fb)+
   xlim(0,50000)+
   ylim(0,50000)+
   labs(x="")+
+  theme(axis.ticks = element_blank(), 
+        axis.text = element_blank())+
   ggtitle("Reactions of the pages Based On Truth")
 
 ```

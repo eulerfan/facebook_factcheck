@@ -268,6 +268,8 @@ ggplot(fb, aes(x=Page,fill= Rating))+
 ``` r
 ggplot(fb,aes(x=Post.Type,y= reaction_count, col=Rating))+
   geom_point(position = "jitter")+
+  facet_grid(~ Rating)+
+  coord_cartesian(ylim=c(0,50000))+
   ggtitle("Truth Ratings Based on Post Type")
 ```
 
@@ -294,7 +296,9 @@ ggplot(fb,aes(x=Rating, group=Page))+
     scale_y_continuous(labels = scales::percent)+
   coord_flip()+
   guides(fill=FALSE)+
-  ggtitle("Percent of Truth Ratings Based on Pages")
+  ggtitle("Percent of Truth Ratings Based on Pages")+
+  theme(axis.ticks = element_blank(), 
+        axis.text = element_blank())
 ```
 
 ![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-4-1.png)
@@ -309,7 +313,9 @@ ggplot(fb,aes(x=Rating, group=Category))+
     scale_y_continuous(labels = scales::percent)+
   coord_flip()+
   guides(fill=FALSE)+
-  ggtitle("Percent of Truth Ratings Based on Partisain Leaning")
+  ggtitle("Percent of Truth Ratings Based on Partisain Leaning")+
+  theme(axis.ticks = element_blank(), 
+        axis.text = element_blank())
 ```
 
 ![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-4-2.png)
@@ -332,6 +338,8 @@ ggplot(fb)+
   xlim(0,50000)+
   ylim(0,50000)+
   labs(x="")+
+  theme(axis.ticks = element_blank(), 
+        axis.text = element_blank())+
   ggtitle("Reactions of the pages Based On Truth")
 ```
 
