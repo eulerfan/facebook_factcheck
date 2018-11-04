@@ -28,12 +28,13 @@ DATA WRANGLING:
      There were a few NAs that had to be changed in the columns share count, reaction count, and the comment count. The NAs were changed to the median instead of the mean, because the outliers of all of these columns caused each of them to be heavily skewed to the right. 
 
 ```{r}
+library(digest)
 library(dplyr)
 library(tidyr)
 library(readr)
 library(ggplot2)
 library(scales)
-#library(RWeka)
+library(plotly)
 
 fb<-read.csv("file:///C:/Users/John/Documents/R/fact-checking-facebook-politics-pages/facebook-fact-check.csv")
 
@@ -60,12 +61,21 @@ fb[which(is.na(fb$share_count)),"share_count"]<- 87
 fb[which(is.na(fb$reaction_count)),"reaction_count"]<- 543
 fb[which(is.na(fb$comment_count)),"comment_count"]<- 131
 
+#assigning variables
+Total_count<- (fb$share_count+ fb$reaction_count+fb$comment_count)
+
+
+#fRating<-(fb$Rating -("mostly true") + ("no factual content"))
+
+
+#graphs
+#ggplot(fb)+
+  #geom_histogram(aes(fRating))
+  
 
 ggplot(fb,aes(x=Category,y = percent(1), fill= Rating))+
    geom_bar(position = "fill",stat = "identity") +
   ggtitle( "Facebook Posts Content Ratings")
-
-Total_count<- (fb$share_count+ fb$reaction_count+fb$comment_count)
 
 ggplot(fb,aes(x=Rating,y= reaction_count,color= Category))+
   geom_boxplot(coef=3, fun = median)+
@@ -86,6 +96,7 @@ ggplot(fb, aes(x=Date.Published, y= Total_count))+
   geom_point()+
   ggtitle("Total Counts on Posted Dates")
 
+
 summary(fb)
 str(fb)
 #View(fb)
@@ -94,7 +105,6 @@ str(fb)
 ```
 ```{r}
 ggplot(fb, aes(x=Page,fill= Rating))+
-  guides(fill=FALSE)+
   geom_bar()+
   coord_flip()+
   ggtitle("Truth Ratings for Indivdual Pages")
@@ -102,8 +112,9 @@ ggplot(fb, aes(x=Page,fill= Rating))+
 
 ggplot(fb,aes(x=Post.Type,y= reaction_count, col=Rating))+
   geom_point(position = "jitter")+
-  facet_grid(~ Rating)+
+  facet_grid(Post.Type ~ Rating)+
   coord_cartesian(ylim=c(0,50000))+
+   theme( axis.text.x.bottom = element_blank())+
   ggtitle("Truth Ratings Based on Post Type")
 
 
@@ -119,13 +130,14 @@ ggplot(fb,aes(x=Rating, group=Page))+
     geom_text(aes( label = scales::percent(..prop..),
                    y= ..prop.. ), stat= "count", vjust = -.5) +
     labs(y = "Percent", fill="Rating") +
-    facet_grid(~Page) +
+    facet_wrap(~Page, labeller = label_value) +
     scale_y_continuous(labels = scales::percent)+
   coord_flip()+
-  guides(fill=FALSE)+
   ggtitle("Percent of Truth Ratings Based on Pages")+
   theme(axis.ticks = element_blank(), 
-        axis.text = element_blank())
+        axis.text = element_blank(),
+        legend.position="bottom")+
+        scale_fill_discrete(labels=c("Mixture of True and False","Mostly False","Mostly True","No Factual Content"))
 
 ggplot(fb,aes(x=Rating, group=Category))+
   geom_bar(aes(y = ..prop.., fill = factor(..x..)), stat="count") +
@@ -135,10 +147,12 @@ ggplot(fb,aes(x=Rating, group=Category))+
     facet_grid(~Category) +
     scale_y_continuous(labels = scales::percent)+
   coord_flip()+
-  guides(fill=FALSE)+
   ggtitle("Percent of Truth Ratings Based on Partisain Leaning")+
   theme(axis.ticks = element_blank(), 
-        axis.text = element_blank())
+        axis.text = element_blank(),
+ legend.position="bottom")+
+        scale_fill_discrete(labels=c("Mixture of True and False","Mostly False","Mostly True","No Factual Content"))
+
 
 ggplot(fb, aes(Date.Published, group = Category)) + 
           geom_bar(aes(y = ..prop..), stat="count") + 
@@ -156,6 +170,28 @@ ggplot(fb)+
   theme(axis.ticks = element_blank(), 
         axis.text = element_blank())+
   ggtitle("Reactions of the pages Based On Truth")
+
+ggplot(fb, aes(x=" ", y= Total_count, fill= reaction_count)) +
+       geom_bar(width = 1, stat = "identity") +
+       coord_polar("y", start=1)+ 
+  ggtitle("Total Count vs Reaction Count")
+
+ggplot(fb, aes(x=" ", y=Total_count, fill= share_count)) +
+       geom_bar(width = 1, stat = "identity") +
+       coord_polar("y", start=12)+ 
+  ggtitle("Total Count vs Share Count")
+
+ggplot(fb, aes(x=" ", y=Total_count, fill= comment_count)) +
+       geom_bar(width = 1, stat = "identity") +
+       coord_polar("y", start=6)+ 
+  ggtitle("Total Count vs Comment Count")
+
+fals_tags<-fb[fb$Rating=="mostly false",]
+
+
+ggplot(data = fals_tags)+
+ geom_bar(mapping = aes(x = Category, fill = Page))+
+  ggtitle("Mostly False based Left vs. Right")
 
 ```
 

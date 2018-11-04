@@ -18,6 +18,12 @@ DATA WRANGLING:
 The data was not very messy. I did have to rename some features. Account id, post id, and the post url were integers that were changed to character strings. Date Published was a factor that was changed to a date. There were a few NAs that had to be changed in the columns share count, reaction count, and the comment count. The NAs were changed to the median instead of the mean, because the outliers of all of these columns caused each of them to be heavily skewed to the right.
 
 ``` r
+library(digest)
+```
+
+    ## Warning: package 'digest' was built under R version 3.4.4
+
+``` r
 library(dplyr)
 ```
 
@@ -66,8 +72,27 @@ library(scales)
     ##     col_factor
 
 ``` r
-#library(RWeka)
+library(plotly)
+```
 
+    ## Warning: package 'plotly' was built under R version 3.4.4
+
+    ## 
+    ## Attaching package: 'plotly'
+
+    ## The following object is masked from 'package:ggplot2':
+    ## 
+    ##     last_plot
+
+    ## The following object is masked from 'package:stats':
+    ## 
+    ##     filter
+
+    ## The following object is masked from 'package:graphics':
+    ## 
+    ##     layout
+
+``` r
 fb<-read.csv("file:///C:/Users/John/Documents/R/fact-checking-facebook-politics-pages/facebook-fact-check.csv")
 
 summary(fb)
@@ -145,6 +170,17 @@ fb[which(is.na(fb$share_count)),"share_count"]<- 87
 fb[which(is.na(fb$reaction_count)),"reaction_count"]<- 543
 fb[which(is.na(fb$comment_count)),"comment_count"]<- 131
 
+#assigning variables
+Total_count<- (fb$share_count+ fb$reaction_count+fb$comment_count)
+
+
+#fRating<-(fb$Rating -("mostly true") + ("no factual content"))
+
+
+#graphs
+#ggplot(fb)+
+  #geom_histogram(aes(fRating))
+  
 
 ggplot(fb,aes(x=Category,y = percent(1), fill= Rating))+
    geom_bar(position = "fill",stat = "identity") +
@@ -154,8 +190,6 @@ ggplot(fb,aes(x=Category,y = percent(1), fill= Rating))+
 ![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-2-1.png)
 
 ``` r
-Total_count<- (fb$share_count+ fb$reaction_count+fb$comment_count)
-
 ggplot(fb,aes(x=Rating,y= reaction_count,color= Category))+
   geom_boxplot(coef=3, fun = median)+
   coord_cartesian(ylim=c(0,50000))+
@@ -257,7 +291,6 @@ str(fb)
 
 ``` r
 ggplot(fb, aes(x=Page,fill= Rating))+
-  guides(fill=FALSE)+
   geom_bar()+
   coord_flip()+
   ggtitle("Truth Ratings for Indivdual Pages")
@@ -268,8 +301,9 @@ ggplot(fb, aes(x=Page,fill= Rating))+
 ``` r
 ggplot(fb,aes(x=Post.Type,y= reaction_count, col=Rating))+
   geom_point(position = "jitter")+
-  facet_grid(~ Rating)+
+  facet_grid(Post.Type ~ Rating)+
   coord_cartesian(ylim=c(0,50000))+
+   theme( axis.text.x.bottom = element_blank())+
   ggtitle("Truth Ratings Based on Post Type")
 ```
 
@@ -292,13 +326,14 @@ ggplot(fb,aes(x=Rating, group=Page))+
     geom_text(aes( label = scales::percent(..prop..),
                    y= ..prop.. ), stat= "count", vjust = -.5) +
     labs(y = "Percent", fill="Rating") +
-    facet_grid(~Page) +
+    facet_wrap(~Page, labeller = label_value) +
     scale_y_continuous(labels = scales::percent)+
   coord_flip()+
-  guides(fill=FALSE)+
   ggtitle("Percent of Truth Ratings Based on Pages")+
   theme(axis.ticks = element_blank(), 
-        axis.text = element_blank())
+        axis.text = element_blank(),
+        legend.position="bottom")+
+        scale_fill_discrete(labels=c("Mixture of True and False","Mostly False","Mostly True","No Factual Content"))
 ```
 
 ![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-4-1.png)
@@ -312,10 +347,11 @@ ggplot(fb,aes(x=Rating, group=Category))+
     facet_grid(~Category) +
     scale_y_continuous(labels = scales::percent)+
   coord_flip()+
-  guides(fill=FALSE)+
   ggtitle("Percent of Truth Ratings Based on Partisain Leaning")+
   theme(axis.ticks = element_blank(), 
-        axis.text = element_blank())
+        axis.text = element_blank(),
+ legend.position="bottom")+
+        scale_fill_discrete(labels=c("Mixture of True and False","Mostly False","Mostly True","No Factual Content"))
 ```
 
 ![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-4-2.png)
@@ -346,5 +382,43 @@ ggplot(fb)+
     ## Warning: Removed 128 rows containing missing values (geom_point).
 
 ![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-4-4.png)
+
+``` r
+ggplot(fb, aes(x=" ", y= Total_count, fill= reaction_count)) +
+       geom_bar(width = 1, stat = "identity") +
+       coord_polar("y", start=1)+ 
+  ggtitle("Total Count vs Reaction Count")
+```
+
+![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-4-5.png)
+
+``` r
+ggplot(fb, aes(x=" ", y=Total_count, fill= share_count)) +
+       geom_bar(width = 1, stat = "identity") +
+       coord_polar("y", start=12)+ 
+  ggtitle("Total Count vs Share Count")
+```
+
+![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-4-6.png)
+
+``` r
+ggplot(fb, aes(x=" ", y=Total_count, fill= comment_count)) +
+       geom_bar(width = 1, stat = "identity") +
+       coord_polar("y", start=6)+ 
+  ggtitle("Total Count vs Comment Count")
+```
+
+![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-4-7.png)
+
+``` r
+fals_tags<-fb[fb$Rating=="mostly false",]
+
+
+ggplot(data = fals_tags)+
+ geom_bar(mapping = aes(x = Category, fill = Page))+
+  ggtitle("Mostly False based Left vs. Right")
+```
+
+![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-4-8.png)
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
