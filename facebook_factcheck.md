@@ -173,13 +173,11 @@ fb[which(is.na(fb$comment_count)),"comment_count"]<- 131
 #assigning variables
 Total_count<- (fb$share_count+ fb$reaction_count+fb$comment_count)
 
+fals_tags<-fb[fb$Rating=="mostly false",]
+Acount<-fb[fb$Page == "Addicting info",]
 
-#fRating<-(fb$Rating -("mostly true") + ("no factual content"))
 
 
-#graphs
-#ggplot(fb)+
-  #geom_histogram(aes(fRating))
   
 
 ggplot(fb,aes(x=Category,y = percent(1), fill= Rating))+
@@ -384,31 +382,31 @@ ggplot(fb)+
 ![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-4-4.png)
 
 ``` r
-ggplot(fb, aes(x=" ", y= Total_count, fill= reaction_count)) +
-       geom_bar(width = 1, stat = "identity") +
-       coord_polar("y", start=1)+ 
-  ggtitle("Total Count vs Reaction Count")
+slices<-c(12231655,8953222,1176975)
+lbls1 <- c("Reaction Count","Share Count","Comment Count")
+pct<- round(slices/sum(slices)*100)
+lbls1<- paste(lbls1,pct)
+lbls1<-paste(lbls1,"%",sep = "")
+pie(slices,labels = lbls1, col = rainbow(length(lbls1)))
 ```
 
-![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-4-5.png)
+![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-5-1.png)
 
 ``` r
-ggplot(fb, aes(x=" ", y=Total_count, fill= share_count)) +
-       geom_bar(width = 1, stat = "identity") +
-       coord_polar("y", start=12)+ 
-  ggtitle("Total Count vs Share Count")
+vals<- c(89.53222,122.31655,11.76975)
+val_names<- sprintf("%s(%s)", c("Share Count","Reaction Count"," Comment Count"),scales::percent(round(vals/sum(vals),digits=4)))
+names(vals)<-val_names
+
+waffle::waffle(vals, rows=8)+
+  ggthemes::scale_fill_tableau(name=NULL)+
+  ggtitle("Total Count")+
+  labs(x=" 1 square = 100,000")
 ```
 
-![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-4-6.png)
+    ## Scale for 'fill' is already present. Adding another scale for 'fill',
+    ## which will replace the existing scale.
 
-``` r
-ggplot(fb, aes(x=" ", y=Total_count, fill= comment_count)) +
-       geom_bar(width = 1, stat = "identity") +
-       coord_polar("y", start=6)+ 
-  ggtitle("Total Count vs Comment Count")
-```
-
-![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-4-7.png)
+![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-5-2.png)
 
 ``` r
 fals_tags<-fb[fb$Rating=="mostly false",]
@@ -419,6 +417,17 @@ ggplot(data = fals_tags)+
   ggtitle("Mostly False based Left vs. Right")
 ```
 
-![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-4-8.png)
+![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-5-3.png)
+
+``` r
+ggplot(fb,aes( x= Post.Type,y=Total_count, fill=Category))+
+  geom_col()+
+  facet_grid(Post.Type ~ Rating)+
+  coord_cartesian(ylim=c(0,50000))+
+   theme( axis.text.x.bottom = element_blank())+
+  ggtitle("Truth Ratings Based on Post Type")
+```
+
+![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-6-1.png)
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
