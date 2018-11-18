@@ -1,7 +1,9 @@
 False and Misleading Information on Hyperpartisan Facebook Pages
 ================
 
-The social media world is becoming more and more polarized. One of the early glimpses of this was the 2016 elections. There is a strong element of disinformation throughout social media. This project is based on research done by Buzzzfeed on Facebook leading up to the 2016 presidential elections. The data was acquired over seven week days (September 19 through 23rd and September 26th and 27th, 2016.) The research included 1145 posts from mainstream political pages (Politico, CNN, ABC), 666 from right-wing political pages (Freedom Daily, Eagle Rising, Right Wing News), 471 from left-wing pages (The Other 98%, Addicting Info, Occupy Democrats ). The pages were ranked based on: • “Mostly True: The post and any related link or image are based on factual information and portray it accurately. This lets them interpret the event/info in their own way, so long as they do not misrepresent events, numbers, quotes, reactions, etc., or make information up. This rating does not allow for unsupported speculation or claims.
+The social media world is becoming more and more polarized. One of the early glimpses of this was the 2016 elections. There is a strong element of disinformation throughout social media. This project is based on research done by Buzzzfeed on Facebook leading up to the 2016 presidential elections. The data was acquired over seven week days (September 19 through 23rd and September 26th and 27th, 2016.) The research included 1145 posts from mainstream political pages (Politico, CNN, ABC), 666 from right-wing political pages (Freedom Daily, Eagle Rising, Right Wing News), 471 from left-wing pages (The Other 98%, Addicting Info, Occupy Democrats ). The pages were ranked based on:
+
+• “Mostly True: The post and any related link or image are based on factual information and portray it accurately. This lets them interpret the event/info in their own way, so long as they do not misrepresent events, numbers, quotes, reactions, etc., or make information up. This rating does not allow for unsupported speculation or claims.
 
 • “Mixture of True and False: Some elements of the information are factually accurate, but some elements or claims are not. This rating should be used when speculation or unfounded claims are mixed with real events, numbers, quotes, etc., or when the headline of the link being shared makes a false claim but the text of the story is largely accurate. It should also only be used when the unsupported or false information is roughly equal to the accurate information in the post or link. Finally, use this rating for news articles that are based on unconfirmed information.
 
@@ -182,7 +184,8 @@ Acount<-fb[fb$Page == "Addicting info",]
 
 ggplot(fb,aes(x=Category,y = percent(1), fill= Rating))+
    geom_bar(position = "fill",stat = "identity") +
-  ggtitle( "Facebook Posts Content Ratings")
+  ggtitle( "Facebook Posts Content Ratings")+
+  theme(axis.title.y =element_blank())
 ```
 
 ![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-2-1.png)
@@ -363,7 +366,7 @@ ggplot(fb, aes(Date.Published, group = Category)) +
   ggtitle("Activity of Posts")
 ```
 
-![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-4-3.png)
+![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-5-1.png)
 
 ``` r
 ggplot(fb)+
@@ -379,7 +382,7 @@ ggplot(fb)+
 
     ## Warning: Removed 128 rows containing missing values (geom_point).
 
-![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-4-4.png)
+![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-5-2.png)
 
 ``` r
 slices<-c(12231655,8953222,1176975)
@@ -390,7 +393,7 @@ lbls1<-paste(lbls1,"%",sep = "")
 pie(slices,labels = lbls1, col = rainbow(length(lbls1)))
 ```
 
-![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-5-1.png)
+![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-6-1.png)
 
 ``` r
 vals<- c(89.53222,122.31655,11.76975)
@@ -406,7 +409,7 @@ waffle::waffle(vals, rows=8)+
     ## Scale for 'fill' is already present. Adding another scale for 'fill',
     ## which will replace the existing scale.
 
-![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-5-2.png)
+![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-6-2.png)
 
 ``` r
 fals_tags<-fb[fb$Rating=="mostly false",]
@@ -417,7 +420,7 @@ ggplot(data = fals_tags)+
   ggtitle("Mostly False based Left vs. Right")
 ```
 
-![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-5-3.png)
+![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-6-3.png)
 
 ``` r
 ggplot(fb,aes( x= Post.Type,y=Total_count, fill=Category))+
@@ -428,6 +431,6 @@ ggplot(fb,aes( x= Post.Type,y=Total_count, fill=Category))+
   ggtitle("Truth Ratings Based on Post Type")
 ```
 
-![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-6-1.png)
+![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-7-1.png)
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.

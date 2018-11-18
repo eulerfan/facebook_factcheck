@@ -10,6 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 The social media world is becoming more and more polarized. One of the early glimpses of this was the 2016 elections. There is a strong element of disinformation throughout social media. This project is based on research done by Buzzzfeed on Facebook leading up to the 2016 presidential elections. The data was acquired over seven week days (September 19 through 23rd and September 26th and 27th, 2016.) 
  The research included 1145 posts from mainstream political pages (Politico, CNN, ABC), 666 from right-wing political pages (Freedom Daily, Eagle Rising, Right Wing News), 471 from left-wing pages (The Other 98%, Addicting Info, Occupy Democrats ).
 The pages were ranked based on:
+
 •	“Mostly True: The post and any related link or image are based on factual information and portray it accurately. This lets them interpret the event/info in their own way, so long as they do not misrepresent events, numbers, quotes, reactions, etc., or make information up. This rating does not allow for unsupported speculation or claims.
 
 •	“Mixture of True and False: Some elements of the information are factually accurate, but some elements or claims are not. This rating should be used when speculation or unfounded claims are mixed with real events, numbers, quotes, etc., or when the headline of the link being shared makes a false claim but the text of the story is largely accurate. It should also only be used when the unsupported or false information is roughly equal to the accurate information in the post or link. Finally, use this rating for news articles that are based on unconfirmed information.
@@ -73,7 +74,8 @@ Acount<-fb[fb$Page == "Addicting info",]
 
 ggplot(fb,aes(x=Category,y = percent(1), fill= Rating))+
    geom_bar(position = "fill",stat = "identity") +
-  ggtitle( "Facebook Posts Content Ratings")
+  ggtitle( "Facebook Posts Content Ratings")+
+  theme(axis.title.y =element_blank())
 
 ggplot(fb,aes(x=Rating,y= reaction_count,color= Category))+
   geom_boxplot(coef=3, fun = median)+
@@ -94,6 +96,9 @@ ggplot(fb, aes(x=Date.Published, y= Total_count))+
   geom_point()+
   ggtitle("Total Counts on Posted Dates")
 
+ggplot(fb,aes(reaction_count,Rating))+
+  geom_point()+
+  geom_smooth()
 
 summary(fb)
 str(fb)
@@ -122,7 +127,7 @@ ggplot(data=fb)+
   ggtitle("Truth Ratings for Post Types")
 
 ```
-```{r}
+```{r fig.height=6.5, fig.width=9}
 ggplot(fb,aes(x=Rating, group=Page))+
   geom_bar(aes(y = ..prop.., fill = factor(..x..)), stat="count") +
     geom_text(aes( label = scales::percent(..prop..),
@@ -137,6 +142,7 @@ ggplot(fb,aes(x=Rating, group=Page))+
         legend.position="bottom")+
         scale_fill_discrete(labels=c("Mixture of True and False","Mostly False","Mostly True","No Factual Content"))
 
+
 ggplot(fb,aes(x=Rating, group=Category))+
   geom_bar(aes(y = ..prop.., fill = factor(..x..)), stat="count") +
     geom_text(aes( label = scales::percent(..prop..),
@@ -150,7 +156,8 @@ ggplot(fb,aes(x=Rating, group=Category))+
         axis.text = element_blank(),
  legend.position="bottom")+
         scale_fill_discrete(labels=c("Mixture of True and False","Mostly False","Mostly True","No Factual Content"))
-
+```
+```{r}
 
 ggplot(fb, aes(Date.Published, group = Category)) + 
           geom_bar(aes(y = ..prop..), stat="count") + 
@@ -170,6 +177,7 @@ ggplot(fb)+
   ggtitle("Reactions of the pages Based On Truth")
 
 ```
+
 
 ```{r}
 slices<-c(12231655,8953222,1176975)
