@@ -48,7 +48,7 @@ table(fb$Rating)
 
 
 ```
-
+The Facebook data was initially acquired to find out the source or sources of the false news that was becoming mainstream news at that time. Some of the more interesting points were where the false news was coming from, the medium that was used, and what kinds of posts got the most reactions.
 
 ```{r}
 #Renameing features
@@ -68,65 +68,30 @@ Total_count<- (fb$share_count+ fb$reaction_count+fb$comment_count)
 fals_tags<-fb[fb$Rating=="mostly false",]
 Acount<-fb[fb$Page == "Addicting info",]
 
+#order changes
+fb$Rating <- factor(fb$Rating, levels = c("no factual content", "mostly false", "mixture of true and false" , "mostly true") , ordered = TRUE)
+fb$Category<- factor(fb$Category, levels = c("left","mainstream","right"),ordered = TRUE)
 
+```
 
-  
+The false news came from both right-wing and left-wing news sites, where the smallest percentage came from the major mainstream news sites. Mainstream created the majority of the posts, but they also carried the most truth. The total number of posts ranked was 2282, and the ranking of those post were 1669 mostly true, 104 mostly false, 245 mixture of true and false, and 264 posts with no factual content.
+```{r}
 
 ggplot(fb,aes(x=Category,y = percent(1), fill= Rating))+
    geom_bar(position = "fill",stat = "identity") +
   ggtitle( "Facebook Posts Content Ratings")+
   theme(axis.title.y =element_blank())
 
-ggplot(fb,aes(x=Rating,y= reaction_count,color= Category))+
-  geom_boxplot(coef=3, fun = median)+
-  coord_cartesian(ylim=c(0,50000))+
-  ggtitle("Ratings vs. Reaction Count")
-
-ggplot(fb,aes(x=Rating,y= share_count,color= Category))+
-  geom_boxplot(coef=3, fun = median)+
-  coord_cartesian(ylim=c(0,50000))+
-  ggtitle("Ratings vs. Share Count")
-
-ggplot(fb,aes(x=Rating,y= comment_count,color= Category))+
-  geom_boxplot(coef=3, fun = median)+
-  coord_cartesian(ylim=c(0,50000))+
-  ggtitle("Ratings vs. Comment Count")
-  
-ggplot(fb, aes(x=Date.Published, y= Total_count))+
-  geom_point()+
-  ggtitle("Total Counts on Posted Dates")
-
-ggplot(fb,aes(reaction_count,Rating))+
-  geom_point()+
-  geom_smooth()
-
-summary(fb)
-str(fb)
-#View(fb)
-
-
-```
-```{r}
 ggplot(fb, aes(x=Page,fill= Rating))+
   geom_bar()+
   coord_flip()+
   ggtitle("Truth Ratings for Indivdual Pages")
 
-
-ggplot(fb,aes(x=Post.Type,y= reaction_count, col=Rating))+
-  geom_point(position = "jitter")+
-  facet_grid(Post.Type ~ Rating)+
-  coord_cartesian(ylim=c(0,50000))+
-   theme( axis.text.x.bottom = element_blank())+
-  ggtitle("Truth Ratings Based on Post Type")
-
-
-ggplot(data=fb)+
-  geom_point(mapping= aes(x=Post.Type, y= Total_count, position= "dodge"))+
-  facet_wrap( ~ Rating,nrow = 2)+
-  ggtitle("Truth Ratings for Post Types")
-
 ```
+The main stream sites created 1145 posts. With 0.7% ranked as a mixture of true and false, and no post ranked as mostly false. Politico had the highest mixture of true and false at 0.4%, but they also had the highest truth ranking at 98.5%. Politico had the lowest amount of no factual content than any other site.
+ Of the 666 posts created by the right 37.7% were mostly false (25.4%) and a mixture of true and false (12.3%). The site creating the highest number of false posts among all the sites came from Right Wing News with a mostly false at 33.2% and a mixture of true and false at 9.7% of its 286 posts totaling 52.9% of their posts. 
+The left-wing sites created 471 posts of which 19.1% were mostly false (4.7%) and a mixture of true and false (14.7%). The highest number of false left-wing posts were created by Addicting Info with 23.6% of their 141 posts being false (5.7%) and a mixture of true and false (17.9%).
+
 ```{r fig.height=6.5, fig.width=9}
 ggplot(fb,aes(x=Rating, group=Page))+
   geom_bar(aes(y = ..prop.., fill = factor(..x..)), stat="count") +
@@ -157,6 +122,70 @@ ggplot(fb,aes(x=Rating, group=Category))+
  legend.position="bottom")+
         scale_fill_discrete(labels=c("Mixture of True and False","Mostly False","Mostly True","No Factual Content"))
 ```
+The reaction to the various posts is also interesting. The total count of shares, comments, and reactions (likes, upvotes, and emojis) was 22,361,852.   The posts with no factual content received the most reactions (10,160,570) followed by the post that were ranked mostly true (8,235,169), third was mostly false (5,863,038), and last was a mixture of true and false (2,932,433). The links received the most attention with 4,277,061 reactions, 2,161,886 shares, and 551,922 comments. The photos were a close second with 5,196,202 reactions, 3,144,489 shares, and 174,497 comments. The videos received a lot of attention also with 2,758,187 reactions, 3,646,836 shares, and 450,418 comments. Interestingly, the text did not receive nearly as much attention as the rest at 205 reactions, 11 shares, and 138 comments
+
+
+```{r}
+
+ggplot(fb,aes(x=Post.Type,y= reaction_count, col=Rating))+
+  geom_point(position = "jitter")+
+  facet_grid(Post.Type ~ Rating)+
+  coord_cartesian(ylim=c(0,50000))+
+   theme( axis.text.x.bottom = element_blank())+
+  ggtitle("Truth Ratings Based on Post Type")
+
+
+ggplot(data=fb)+
+  geom_point(mapping= aes(x=Post.Type, y= Total_count, position= "dodge"))+
+  facet_wrap( ~ Rating,nrow = 2)+
+  ggtitle("Truth Ratings for Post Types")
+
+ggplot(fb,aes(x=Rating,y= reaction_count,color= Category))+
+  geom_boxplot(coef=3, fun = median)+
+  coord_cartesian(ylim=c(0,100000))+
+  ggtitle("Ratings vs. Reaction Count")
+
+ggplot(fb,aes(x=Rating,y= share_count,color= Category))+
+  geom_boxplot(coef=3, fun = median)+
+  coord_cartesian(ylim=c(0,100000))+
+  ggtitle("Ratings vs. Share Count")
+
+ggplot(fb,aes(x=Rating,y= comment_count,color= Category))+
+  geom_boxplot(coef=3, fun = median)+
+  coord_cartesian(ylim=c(0,7500))+
+  ggtitle("Ratings vs. Comment Count")
+  
+ggplot(fb, aes(x=Date.Published, y= Total_count))+
+  geom_point()+
+  ggtitle("Total Counts on Posted Dates")
+
+fb%>% group_by(Date.Published,Rating) %>% 
+summarise(posts=length(Rating)) %>% ggplot(aes(as.Date(Date.Published),posts,col=Rating)) +
+geom_line(size=1.5)+geom_point() + xlab("Date") + ylab("Posts") + ggtitle("Number of posts with Time ")
+
+summary(fb)
+str(fb)
+
+```
+
+```{r}
+
+
+ggplot(fb,aes(x=Post.Type,y= reaction_count, col=Rating))+
+  geom_point(position = "jitter")+
+  facet_grid(Post.Type ~ Rating)+
+  coord_cartesian(ylim=c(0,50000))+
+   theme( axis.text.x.bottom = element_blank())+
+  ggtitle("Truth Ratings Based on Post Type")
+
+
+ggplot(data=fb)+
+  geom_point(mapping= aes(x=Post.Type, y= Total_count, position= "dodge"))+
+  facet_wrap( ~ Rating,nrow = 2)+
+  ggtitle("Truth Ratings for Post Types")
+
+```
+
 ```{r}
 
 ggplot(fb, aes(Date.Published, group = Category)) + 

@@ -160,6 +160,8 @@ table(fb$Rating)
     ##               mostly true        no factual content 
     ##                      1669                       264
 
+The Facebook data was initially acquired to find out the source or sources of the false news that was becoming mainstream news at that time. Some of the more interesting points were where the false news was coming from, the medium that was used, and what kinds of posts got the most reactions.
+
 ``` r
 #Renameing features
 fb$account_id <- as.character(fb$account_id)
@@ -178,117 +180,21 @@ Total_count<- (fb$share_count+ fb$reaction_count+fb$comment_count)
 fals_tags<-fb[fb$Rating=="mostly false",]
 Acount<-fb[fb$Page == "Addicting info",]
 
+#order changes
+fb$Rating <- factor(fb$Rating, levels = c("no factual content", "mostly false", "mixture of true and false" , "mostly true") , ordered = TRUE)
+fb$Category<- factor(fb$Category, levels = c("left","mainstream","right"),ordered = TRUE)
+```
 
+The false news came from both right-wing and left-wing news sites, where the smallest percentage came from the major mainstream news sites. Mainstream created the majority of the posts, but they also carried the most truth. The total number of posts ranked was 2282, and the ranking of those post were 1669 mostly true, 104 mostly false, 245 mixture of true and false, and 264 posts with no factual content.
 
-  
-
+``` r
 ggplot(fb,aes(x=Category,y = percent(1), fill= Rating))+
    geom_bar(position = "fill",stat = "identity") +
   ggtitle( "Facebook Posts Content Ratings")+
   theme(axis.title.y =element_blank())
 ```
 
-![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-2-1.png)
-
-``` r
-ggplot(fb,aes(x=Rating,y= reaction_count,color= Category))+
-  geom_boxplot(coef=3, fun = median)+
-  coord_cartesian(ylim=c(0,50000))+
-  ggtitle("Ratings vs. Reaction Count")
-```
-
-    ## Warning: Ignoring unknown parameters: fun
-
-![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-2-2.png)
-
-``` r
-ggplot(fb,aes(x=Rating,y= share_count,color= Category))+
-  geom_boxplot(coef=3, fun = median)+
-  coord_cartesian(ylim=c(0,50000))+
-  ggtitle("Ratings vs. Share Count")
-```
-
-    ## Warning: Ignoring unknown parameters: fun
-
-![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-2-3.png)
-
-``` r
-ggplot(fb,aes(x=Rating,y= comment_count,color= Category))+
-  geom_boxplot(coef=3, fun = median)+
-  coord_cartesian(ylim=c(0,50000))+
-  ggtitle("Ratings vs. Comment Count")
-```
-
-    ## Warning: Ignoring unknown parameters: fun
-
-![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-2-4.png)
-
-``` r
-ggplot(fb, aes(x=Date.Published, y= Total_count))+
-  geom_point()+
-  ggtitle("Total Counts on Posted Dates")
-```
-
-![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-2-5.png)
-
-``` r
-summary(fb)
-```
-
-    ##   account_id          post_id                Category   
-    ##  Length:2282        Length:2282        left      : 471  
-    ##  Class :character   Class :character   mainstream:1145  
-    ##  Mode  :character   Mode  :character   right     : 666  
-    ##                                                         
-    ##                                                         
-    ##                                                         
-    ##                                                         
-    ##                 Page       Post.URL         Date.Published      
-    ##  Politico         :536   Length:2282        Min.   :2016-09-19  
-    ##  CNN Politics     :409   Class :character   1st Qu.:2016-09-20  
-    ##  Eagle Rising     :286   Mode  :character   Median :2016-09-22  
-    ##  Right Wing News  :268                      Mean   :2016-09-22  
-    ##  Occupy Democrats :209                      3rd Qu.:2016-09-26  
-    ##  ABC News Politics:200                      Max.   :2016-09-27  
-    ##  (Other)          :374                                          
-    ##  Post.Type                          Rating     Debate    
-    ##  link :1780   mixture of true and false: 245      :1984  
-    ##  photo: 207   mostly false             : 104   yes: 298  
-    ##  text :   4   mostly true              :1669             
-    ##  video: 291   no factual content       : 264             
-    ##                                                          
-    ##                                                          
-    ##                                                          
-    ##   share_count      reaction_count   comment_count     
-    ##  Min.   :      1   Min.   :     2   Min.   :     0.0  
-    ##  1st Qu.:     25   1st Qu.:   149   1st Qu.:    37.0  
-    ##  Median :     87   Median :   543   Median :   131.0  
-    ##  Mean   :   3923   Mean   :  5360   Mean   :   515.8  
-    ##  3rd Qu.:    680   3rd Qu.:  2414   3rd Qu.:   390.0  
-    ##  Max.   :1088995   Max.   :456458   Max.   :159047.0  
-    ## 
-
-``` r
-str(fb)
-```
-
-    ## 'data.frame':    2282 obs. of  12 variables:
-    ##  $ account_id    : chr  "184096565021911" "184096565021911" "184096565021911" "184096565021911" ...
-    ##  $ post_id       : chr  "1035057923259100" "1035269309904628" "1035305953234297" "1035322636565962" ...
-    ##  $ Category      : Factor w/ 3 levels "left","mainstream",..: 2 2 2 2 2 2 2 2 2 2 ...
-    ##  $ Page          : Factor w/ 9 levels "ABC News Politics",..: 1 1 1 1 1 1 1 1 1 1 ...
-    ##  $ Post.URL      : chr  "https://www.facebook.com/ABCNewsPolitics/posts/1035057923259100" "https://www.facebook.com/ABCNewsPolitics/posts/1035269309904628" "https://www.facebook.com/ABCNewsPolitics/posts/1035305953234297" "https://www.facebook.com/ABCNewsPolitics/posts/1035322636565962" ...
-    ##  $ Date.Published: Date, format: "2016-09-19" "2016-09-19" ...
-    ##  $ Post.Type     : Factor w/ 4 levels "link","photo",..: 4 1 1 1 4 1 4 1 1 4 ...
-    ##  $ Rating        : Factor w/ 4 levels "mixture of true and false",..: 4 3 3 3 3 3 3 3 3 3 ...
-    ##  $ Debate        : Factor w/ 2 levels "","yes": 1 1 1 1 1 1 1 1 1 1 ...
-    ##  $ share_count   : num  87 1 34 35 568 23 46 7 7 152 ...
-    ##  $ reaction_count: num  146 33 63 170 3188 ...
-    ##  $ comment_count : num  15 34 27 86 2815 ...
-
-``` r
-#View(fb)
-```
+![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-3-1.png)
 
 ``` r
 ggplot(fb, aes(x=Page,fill= Rating))+
@@ -297,29 +203,7 @@ ggplot(fb, aes(x=Page,fill= Rating))+
   ggtitle("Truth Ratings for Indivdual Pages")
 ```
 
-![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-3-1.png)
-
-``` r
-ggplot(fb,aes(x=Post.Type,y= reaction_count, col=Rating))+
-  geom_point(position = "jitter")+
-  facet_grid(Post.Type ~ Rating)+
-  coord_cartesian(ylim=c(0,50000))+
-   theme( axis.text.x.bottom = element_blank())+
-  ggtitle("Truth Ratings Based on Post Type")
-```
-
-![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-3-2.png)
-
-``` r
-ggplot(data=fb)+
-  geom_point(mapping= aes(x=Post.Type, y= Total_count, position= "dodge"))+
-  facet_wrap( ~ Rating,nrow = 2)+
-  ggtitle("Truth Ratings for Post Types")
-```
-
-    ## Warning: Ignoring unknown aesthetics: position
-
-![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-3-3.png)
+![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-3-2.png) The main stream sites created 1145 posts. With 0.7% ranked as a mixture of true and false, and no post ranked as mostly false. Politico had the highest mixture of true and false at 0.4%, but they also had the highest truth ranking at 98.5%. Politico had the lowest amount of no factual content than any other site. Of the 666 posts created by the right 37.7% were mostly false (25.4%) and a mixture of true and false (12.3%). The site creating the highest number of false posts among all the sites came from Right Wing News with a mostly false at 33.2% and a mixture of true and false at 9.7% of its 286 posts totaling 52.9% of their posts. The left-wing sites created 471 posts of which 19.1% were mostly false (4.7%) and a mixture of true and false (14.7%). The highest number of false left-wing posts were created by Addicting Info with 23.6% of their 141 posts being false (5.7%) and a mixture of true and false (17.9%).
 
 ``` r
 ggplot(fb,aes(x=Rating, group=Page))+
@@ -355,7 +239,157 @@ ggplot(fb,aes(x=Rating, group=Category))+
         scale_fill_discrete(labels=c("Mixture of True and False","Mostly False","Mostly True","No Factual Content"))
 ```
 
-![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-4-2.png)
+![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-4-2.png) The reaction to the various posts is also interesting. The total count of shares, comments, and reactions (likes, upvotes, and emojis) was 22,361,852. The posts with no factual content received the most reactions (10,160,570) followed by the post that were ranked mostly true (8,235,169), third was mostly false (5,863,038), and last was a mixture of true and false (2,932,433). The links received the most attention with 4,277,061 reactions, 2,161,886 shares, and 551,922 comments. The photos were a close second with 5,196,202 reactions, 3,144,489 shares, and 174,497 comments. The videos received a lot of attention also with 2,758,187 reactions, 3,646,836 shares, and 450,418 comments. Interestingly, the text did not receive nearly as much attention as the rest at 205 reactions, 11 shares, and 138 comments
+
+``` r
+ggplot(fb,aes(x=Post.Type,y= reaction_count, col=Rating))+
+  geom_point(position = "jitter")+
+  facet_grid(Post.Type ~ Rating)+
+  coord_cartesian(ylim=c(0,50000))+
+   theme( axis.text.x.bottom = element_blank())+
+  ggtitle("Truth Ratings Based on Post Type")
+```
+
+![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-5-1.png)
+
+``` r
+ggplot(data=fb)+
+  geom_point(mapping= aes(x=Post.Type, y= Total_count, position= "dodge"))+
+  facet_wrap( ~ Rating,nrow = 2)+
+  ggtitle("Truth Ratings for Post Types")
+```
+
+    ## Warning: Ignoring unknown aesthetics: position
+
+![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-5-2.png)
+
+``` r
+ggplot(fb,aes(x=Rating,y= reaction_count,color= Category))+
+  geom_boxplot(coef=3, fun = median)+
+  coord_cartesian(ylim=c(0,100000))+
+  ggtitle("Ratings vs. Reaction Count")
+```
+
+    ## Warning: Ignoring unknown parameters: fun
+
+![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-5-3.png)
+
+``` r
+ggplot(fb,aes(x=Rating,y= share_count,color= Category))+
+  geom_boxplot(coef=3, fun = median)+
+  coord_cartesian(ylim=c(0,100000))+
+  ggtitle("Ratings vs. Share Count")
+```
+
+    ## Warning: Ignoring unknown parameters: fun
+
+![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-5-4.png)
+
+``` r
+ggplot(fb,aes(x=Rating,y= comment_count,color= Category))+
+  geom_boxplot(coef=3, fun = median)+
+  coord_cartesian(ylim=c(0,7500))+
+  ggtitle("Ratings vs. Comment Count")
+```
+
+    ## Warning: Ignoring unknown parameters: fun
+
+![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-5-5.png)
+
+``` r
+ggplot(fb, aes(x=Date.Published, y= Total_count))+
+  geom_point()+
+  ggtitle("Total Counts on Posted Dates")
+```
+
+![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-5-6.png)
+
+``` r
+fb%>% group_by(Date.Published,Rating) %>% 
+summarise(posts=length(Rating)) %>% ggplot(aes(as.Date(Date.Published),posts,col=Rating)) +
+geom_line(size=1.5)+geom_point() + xlab("Date") + ylab("Posts") + ggtitle("Number of posts with Time ")
+```
+
+    ## Warning: package 'bindrcpp' was built under R version 3.4.4
+
+![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-5-7.png)
+
+``` r
+summary(fb)
+```
+
+    ##   account_id          post_id                Category   
+    ##  Length:2282        Length:2282        left      : 471  
+    ##  Class :character   Class :character   mainstream:1145  
+    ##  Mode  :character   Mode  :character   right     : 666  
+    ##                                                         
+    ##                                                         
+    ##                                                         
+    ##                                                         
+    ##                 Page       Post.URL         Date.Published      
+    ##  Politico         :536   Length:2282        Min.   :2016-09-19  
+    ##  CNN Politics     :409   Class :character   1st Qu.:2016-09-20  
+    ##  Eagle Rising     :286   Mode  :character   Median :2016-09-22  
+    ##  Right Wing News  :268                      Mean   :2016-09-22  
+    ##  Occupy Democrats :209                      3rd Qu.:2016-09-26  
+    ##  ABC News Politics:200                      Max.   :2016-09-27  
+    ##  (Other)          :374                                          
+    ##  Post.Type                          Rating     Debate    
+    ##  link :1780   no factual content       : 264      :1984  
+    ##  photo: 207   mostly false             : 104   yes: 298  
+    ##  text :   4   mixture of true and false: 245             
+    ##  video: 291   mostly true              :1669             
+    ##                                                          
+    ##                                                          
+    ##                                                          
+    ##   share_count      reaction_count   comment_count     
+    ##  Min.   :      1   Min.   :     2   Min.   :     0.0  
+    ##  1st Qu.:     25   1st Qu.:   149   1st Qu.:    37.0  
+    ##  Median :     87   Median :   543   Median :   131.0  
+    ##  Mean   :   3923   Mean   :  5360   Mean   :   515.8  
+    ##  3rd Qu.:    680   3rd Qu.:  2414   3rd Qu.:   390.0  
+    ##  Max.   :1088995   Max.   :456458   Max.   :159047.0  
+    ## 
+
+``` r
+str(fb)
+```
+
+    ## 'data.frame':    2282 obs. of  12 variables:
+    ##  $ account_id    : chr  "184096565021911" "184096565021911" "184096565021911" "184096565021911" ...
+    ##  $ post_id       : chr  "1035057923259100" "1035269309904628" "1035305953234297" "1035322636565962" ...
+    ##  $ Category      : Ord.factor w/ 3 levels "left"<"mainstream"<..: 2 2 2 2 2 2 2 2 2 2 ...
+    ##  $ Page          : Factor w/ 9 levels "ABC News Politics",..: 1 1 1 1 1 1 1 1 1 1 ...
+    ##  $ Post.URL      : chr  "https://www.facebook.com/ABCNewsPolitics/posts/1035057923259100" "https://www.facebook.com/ABCNewsPolitics/posts/1035269309904628" "https://www.facebook.com/ABCNewsPolitics/posts/1035305953234297" "https://www.facebook.com/ABCNewsPolitics/posts/1035322636565962" ...
+    ##  $ Date.Published: Date, format: "2016-09-19" "2016-09-19" ...
+    ##  $ Post.Type     : Factor w/ 4 levels "link","photo",..: 4 1 1 1 4 1 4 1 1 4 ...
+    ##  $ Rating        : Ord.factor w/ 4 levels "no factual content"<..: 1 4 4 4 4 4 4 4 4 4 ...
+    ##  $ Debate        : Factor w/ 2 levels "","yes": 1 1 1 1 1 1 1 1 1 1 ...
+    ##  $ share_count   : num  87 1 34 35 568 23 46 7 7 152 ...
+    ##  $ reaction_count: num  146 33 63 170 3188 ...
+    ##  $ comment_count : num  15 34 27 86 2815 ...
+
+``` r
+ggplot(fb,aes(x=Post.Type,y= reaction_count, col=Rating))+
+  geom_point(position = "jitter")+
+  facet_grid(Post.Type ~ Rating)+
+  coord_cartesian(ylim=c(0,50000))+
+   theme( axis.text.x.bottom = element_blank())+
+  ggtitle("Truth Ratings Based on Post Type")
+```
+
+![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-6-1.png)
+
+``` r
+ggplot(data=fb)+
+  geom_point(mapping= aes(x=Post.Type, y= Total_count, position= "dodge"))+
+  facet_wrap( ~ Rating,nrow = 2)+
+  ggtitle("Truth Ratings for Post Types")
+```
+
+    ## Warning: Ignoring unknown aesthetics: position
+
+![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-6-2.png)
 
 ``` r
 ggplot(fb, aes(Date.Published, group = Category)) + 
@@ -366,7 +400,7 @@ ggplot(fb, aes(Date.Published, group = Category)) +
   ggtitle("Activity of Posts")
 ```
 
-![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-5-1.png)
+![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-7-1.png)
 
 ``` r
 ggplot(fb)+
@@ -380,9 +414,9 @@ ggplot(fb)+
   ggtitle("Reactions of the pages Based On Truth")
 ```
 
-    ## Warning: Removed 128 rows containing missing values (geom_point).
+    ## Warning: Removed 141 rows containing missing values (geom_point).
 
-![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-5-2.png)
+![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-7-2.png)
 
 ``` r
 slices<-c(12231655,8953222,1176975)
@@ -393,7 +427,7 @@ lbls1<-paste(lbls1,"%",sep = "")
 pie(slices,labels = lbls1, col = rainbow(length(lbls1)))
 ```
 
-![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-6-1.png)
+![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-8-1.png)
 
 ``` r
 vals<- c(89.53222,122.31655,11.76975)
@@ -409,7 +443,7 @@ waffle::waffle(vals, rows=8)+
     ## Scale for 'fill' is already present. Adding another scale for 'fill',
     ## which will replace the existing scale.
 
-![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-6-2.png)
+![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-8-2.png)
 
 ``` r
 fals_tags<-fb[fb$Rating=="mostly false",]
@@ -420,7 +454,7 @@ ggplot(data = fals_tags)+
   ggtitle("Mostly False based Left vs. Right")
 ```
 
-![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-6-3.png)
+![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-8-3.png)
 
 ``` r
 ggplot(fb,aes( x= Post.Type,y=Total_count, fill=Category))+
@@ -431,6 +465,6 @@ ggplot(fb,aes( x= Post.Type,y=Total_count, fill=Category))+
   ggtitle("Truth Ratings Based on Post Type")
 ```
 
-![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-7-1.png)
+![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-9-1.png)
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
