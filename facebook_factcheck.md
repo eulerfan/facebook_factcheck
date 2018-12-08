@@ -470,35 +470,35 @@ leaning site “Occupy Democrats” had the most attention with over 1.7
 million reactions, comments, and shares.
 
 ``` r
-ggplot(fb, aes(x=Date.Published, y= Total_count))+
-  geom_point()+
+ggplot(fb, aes(x = Date.Published, y = Total_count)) +
+  geom_point() +
   ggtitle("Total Counts on Posted Dates")
 ```
 
 ![](facebook_factcheck_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
 
 ``` r
-fb%>% group_by(Date.Published,Rating) %>% 
-summarise(posts=length(Rating)) %>% ggplot(aes(as.Date(Date.Published),posts,col=Rating)) +
-geom_line(size=1.5)+geom_point() + xlab("Date") + ylab("Posts") + ggtitle("Number of posts with Time ")
+fb %>% group_by(Date.Published,Rating) %>% 
+summarise(posts = length(Rating)) %>% ggplot(aes(as.Date(Date.Published),posts,col = Rating)) +
+geom_line(size = 1.5) + geom_point() + xlab("Date") + ylab("Posts") + ggtitle("Number of posts with Time ")
 ```
 
 ![](facebook_factcheck_files/figure-gfm/unnamed-chunk-8-2.png)<!-- -->
 
 ``` r
-fb%>% group_by(Category,Rating) %>% 
-summarise(posts=length(Rating)) %>% ggplot(aes(as.numeric(Category),posts,col=Rating)) +
-geom_line(size=1.5)+geom_point() + xlab("Date") + ylab("Posts") + ggtitle("Number of posts with Time ")
+fb %>% group_by(Category,Rating) %>% 
+summarise(posts = length(Rating)) %>% ggplot(aes(as.numeric(Category),posts,col = Rating)) +
+geom_line(size = 1.5) + geom_point() + xlab("Date") + ylab("Posts") + ggtitle("Number of posts with Time ")
 ```
 
 ![](facebook_factcheck_files/figure-gfm/unnamed-chunk-8-3.png)<!-- -->
 
 ``` r
 ggplot(fb, aes(Date.Published, group = Category)) + 
-          geom_bar(aes(y = ..prop..), stat="count") + 
-          scale_y_continuous(labels=scales::percent) +
+          geom_bar(aes(y = ..prop..), stat = "count") + 
+          scale_y_continuous(labels = scales::percent) +
           ylab("relative frequencies") +
-          facet_grid(Category~.)+
+          facet_grid(Category~.) +
   ggtitle("Activity of Posts")
 ```
 
@@ -525,7 +525,7 @@ ggplot(fb,aes(x = Post.Type,y = reaction_count, col = Rating)) +
 
 ``` r
 #
-## problem with Total_count
+# problem with Total_count
 #ggplot(data = fb) +
 #  geom_point(mapping = aes(x = Post.Type, y = Total_count, position = "dodge")) +
 #  facet_wrap( ~ Rating,nrow = 2) +
