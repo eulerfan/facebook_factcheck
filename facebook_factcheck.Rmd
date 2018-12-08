@@ -166,10 +166,27 @@ The reaction to the various posts is also interesting. The total count of shares
 
 
 ```{r}
+str(fb$Rating) # convert this to ordered factors
+fb$Rating <- factor(fb$Rating, levels = c("no factual content", "mostly false", "mixture of true and false" , "mostly true") , ordered = TRUE)
+str(fb$Rating) # convert this to ordered factors
 
-ggplot(fb,aes(x=Rating,y= reaction_count,color= Category))+
-  geom_boxplot(coef=3, fun = median)+
-  coord_cartesian(ylim=c(0,100000))+
+fb <- fb[complete.cases(fb), ]
+#fb$Rating <- as.numeric(fb$Rating)
+
+```
+
+
+```{r, section needs modifying}
+
+#ggplot(fb,aes(x=as.numeric(Rating),y= reaction_count,color= Category))+
+  ggplot(fb,aes(x=Rating,y= reaction_count,color= Category))+
+  coord_cartesian(ylim=c(0,50000))+
+
+   #geom_point(shape=1) +
+  geom_boxplot(coef=3, fun = median, notch = FALSE)+
+ 
+     geom_smooth(aes(x=as.numeric(Rating),y= reaction_count,color= Category),method=lm,                  se = FALSE) +
+   # geom_boxplot(aes(group = Rating) ,notch = FALSE ,coef = 1.5) +
   ggtitle("Ratings vs. Reaction Count")
 
 ggplot(fb,aes(x=Rating,y= share_count,color= Category))+

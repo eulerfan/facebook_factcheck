@@ -429,18 +429,43 @@ photos were a close second with 5,196,202 reactions, 3,144,489 shares,
 and 174,497 comments. The videos received a lot of attention also with
 2,758,187 reactions, 3,646,836 shares, and 450,418 comments.
 Interestingly, the text did not receive nearly as much attention as the
-rest at 205 reactions, 11 shares, and 138 comments.
+rest at 205 reactions, 11 shares, and 138
+    comments.
 
 ``` r
-ggplot(fb,aes(x=Rating,y= reaction_count,color= Category))+
-  geom_boxplot(coef=3, fun = median)+
-  coord_cartesian(ylim=c(0,100000))+
+str(fb$Rating) # convert this to ordered factors
+```
+
+    ##  Ord.factor w/ 4 levels "no factual content"<..: 1 4 4 4 4 4 4 4 4 4 ...
+
+``` r
+fb$Rating <- factor(fb$Rating, levels = c("no factual content", "mostly false", "mixture of true and false" , "mostly true") , ordered = TRUE)
+str(fb$Rating) # convert this to ordered factors
+```
+
+    ##  Ord.factor w/ 4 levels "no factual content"<..: 1 4 4 4 4 4 4 4 4 4 ...
+
+``` r
+fb <- fb[complete.cases(fb), ]
+#fb$Rating <- as.numeric(fb$Rating)
+```
+
+``` r
+#ggplot(fb,aes(x=as.numeric(Rating),y= reaction_count,color= Category))+
+  ggplot(fb,aes(x=Rating,y= reaction_count,color= Category))+
+  coord_cartesian(ylim=c(0,50000))+
+
+   #geom_point(shape=1) +
+  geom_boxplot(coef=3, fun = median, notch = FALSE)+
+ 
+     geom_smooth(aes(x=as.numeric(Rating),y= reaction_count,color= Category),method=lm,                  se = FALSE) +
+   # geom_boxplot(aes(group = Rating) ,notch = FALSE ,coef = 1.5) +
   ggtitle("Ratings vs. Reaction Count")
 ```
 
     ## Warning: Ignoring unknown parameters: fun
 
-![](facebook_factcheck_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
+![](facebook_factcheck_files/figure-gfm/section%20needs%20modifying-1.png)<!-- -->
 
 ``` r
 ggplot(fb,aes(x=Rating,y= share_count,color= Category))+
@@ -451,7 +476,7 @@ ggplot(fb,aes(x=Rating,y= share_count,color= Category))+
 
     ## Warning: Ignoring unknown parameters: fun
 
-![](facebook_factcheck_files/figure-gfm/unnamed-chunk-7-2.png)<!-- -->
+![](facebook_factcheck_files/figure-gfm/section%20needs%20modifying-2.png)<!-- -->
 
 ``` r
 ggplot(fb,aes(x=Rating,y= comment_count,color= Category))+
@@ -462,7 +487,7 @@ ggplot(fb,aes(x=Rating,y= comment_count,color= Category))+
 
     ## Warning: Ignoring unknown parameters: fun
 
-![](facebook_factcheck_files/figure-gfm/unnamed-chunk-7-3.png)<!-- -->
+![](facebook_factcheck_files/figure-gfm/section%20needs%20modifying-3.png)<!-- -->
 
 The days of the posts did not show any real difference to reactions,
 comments, or shares. But on September 21, 2016 a video from a the left
