@@ -33,8 +33,9 @@ library(ggplot2)
 library(scales)
 library(gmodels)
 
-fb<-read.csv("file:///C:/Users/John/Documents/R/fact-checking-facebook-politics-pages/facebook-fact-check.csv")
-
+#fb<-read.csv("file:///C:/Users/John/Documents/R/fact-checking-facebook-politics-pages/facebook-fact-check.csv")
+fb <- read.csv("file://facebook_fact_check.csv")
+str(fb)
 
 
 ```
@@ -212,52 +213,51 @@ ggplot(fb, aes(Date.Published, group = Category)) +
 
 ```
 
-Here we see that " mostly true" posts made up the majority of the total posts.
+#Here we see that " mostly true" posts made up the majority of the total posts.
 ```{r}
-
-
-ggplot(fb,aes(x=Post.Type,y= reaction_count, col=Rating))+
-  geom_point(position = "jitter")+
-  facet_grid(Post.Type ~ Rating)+
-  coord_cartesian(ylim=c(0,50000))+
-   theme( axis.text.x.bottom = element_blank())+
+ggplot(fb,aes(x = Post.Type,y = reaction_count, col = Rating)) +
+  geom_point(position = "jitter") +
+  facet_grid(Post.Type ~ Rating) +
+  coord_cartesian(ylim = c(0,50000)) +
+  theme( axis.text.x.bottom = element_blank()) +
   ggtitle("Truth Ratings Based on Post Type")
-
-
-ggplot(data=fb)+
-  geom_point(mapping= aes(x=Post.Type, y= Total_count, position= "dodge"))+
-  facet_wrap( ~ Rating,nrow = 2)+
-  coord_cartesian(ylim=c(0,80000))+
-  ggtitle("Truth Ratings for Post Types")
-
-ggplot(fb)+
-  geom_point(mapping = aes(x= reaction_count,y= Total_count))+
-  facet_grid(.~Rating)+
-  xlim(0,50000)+
-  ylim(0,50000)+
-  labs(x="")+
-  theme(axis.ticks = element_blank(), 
-        axis.text = element_blank())+
-  ggtitle("Reactions of the pages Based On Truth")
-
-vals<- c(89.53222,122.31655,11.76975)
-val_names<- sprintf("%s(%s)", c("Share Count","Reaction Count"," Comment Count"),scales::percent(round(vals/sum(vals),digits=4)))
-names(vals)<-val_names
-
-waffle::waffle(vals, rows=8)+
-  ggthemes::scale_fill_tableau(name=NULL)+
-  ggtitle("Total Count")+
-  labs(x=" 1 square = 100,000")
-
-
-
-ggplot(fb,aes( x= Post.Type,y=Total_count, fill=Category))+
-  geom_col()+
-  facet_grid(Post.Type ~ Rating)+
-  coord_cartesian(ylim=c(0,50000))+
-   theme( axis.text.x.bottom = element_blank())+
-  ggtitle("Truth Ratings Based on Post Type")
-
+#
+## problem with Total_count
+#ggplot(data = fb) +
+#  geom_point(mapping = aes(x = Post.Type, y = Total_count, position = "dodge")) +
+#  facet_wrap( ~ Rating,nrow = 2) +
+#  coord_cartesian(ylim = c(0,80000)) +
+#  ggtitle("Truth Ratings for Post Types")
+#
+#
+#ggplot(fb) +
+#  geom_point(mapping = aes(x = reaction_count,y = Total_count)) +
+#  facet_grid(.~Rating) +
+#  xlim(0,50000) +
+#  ylim(0,50000) +
+#  labs(x = "") +
+#  theme(axis.ticks = element_blank(), 
+#        axis.text = element_blank()) +
+#  ggtitle("Reactions of the pages Based On Truth")
+#
+#vals <- c(89.53222,122.31655,11.76975)
+#val_names <- sprintf("%s(%s)", c("Share Count","Reaction Count"," Comment Count"),scales::percent(round(vals/sum(vals),digits = 4)))
+#names(vals) <- val_names
+#
+#waffle::waffle(vals, rows = 8) +
+#  ggthemes::scale_fill_tableau(name = NULL) +
+#  ggtitle("Total Count") +
+#  labs(x = " 1 square = 100,000")
+#
+#
+#
+#ggplot(fb,aes( x = Post.Type,y = Total_count, fill = Category)) +
+#  geom_col() +
+#  facet_grid(Post.Type ~ Rating) +
+#  coord_cartesian(ylim = c(0,50000)) +
+#  # theme( axis.text.x.bottom = element_blank()) +
+#  ggtitle("Truth Ratings Based on Post Type")
+#
 ```
 
 From these graphs we see very little reactions, shares, comments to texts,and photos and links have the majority. Mostly true and no factual content getting most of the attention.

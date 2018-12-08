@@ -1,31 +1,57 @@
 False and Misleading Information on Hyperpartisan Facebook Pages
 ================
 
-The social media world is becoming more and more polarized. One of the early glimpses of this was the 2016 elections. There is a strong element of disinformation throughout social media. This project is based on research done by Buzzzfeed on Facebook leading up to the 2016 presidential elections. The data was acquired over seven week days (September 19 through 23rd and September 26th and 27th, 2016) The research included 1145 posts from mainstream political pages (Politico, CNN, ABC), 666 from right-wing political pages (Freedom Daily, Eagle Rising, Right Wing News), 471 from left-wing pages (The Other 98%, Addicting Info, Occupy Democrats ). The pages were ranked based on:
+The social media world is becoming more and more polarized. One of the
+early glimpses of this was the 2016 elections. There is a strong element
+of disinformation throughout social media. This project is based on
+research done by Buzzzfeed on Facebook leading up to the 2016
+presidential elections. The data was acquired over seven week days
+(September 19 through 23rd and September 26th and 27th, 2016) The
+research included 1145 posts from mainstream political pages (Politico,
+CNN, ABC), 666 from right-wing political pages (Freedom Daily, Eagle
+Rising, Right Wing News), 471 from left-wing pages (The Other 98%,
+Addicting Info, Occupy Democrats ). The pages were ranked based on:
 
-• “Mostly True: The post and any related link or image are based on factual information and portray it accurately. This lets them interpret the event/info in their own way, so long as they do not misrepresent events, numbers, quotes, reactions, etc., or make information up. This rating does not allow for unsupported speculation or claims.
+• “Mostly True: The post and any related link or image are based on
+factual information and portray it accurately. This lets them interpret
+the event/info in their own way, so long as they do not misrepresent
+events, numbers, quotes, reactions, etc., or make information up. This
+rating does not allow for unsupported speculation or claims.
 
-• “Mixture of True and False: Some elements of the information are factually accurate, but some elements or claims are not. This rating should be used when speculation or unfounded claims are mixed with real events, numbers, quotes, etc., or when the headline of the link being shared makes a false claim but the text of the story is largely accurate. It should also only be used when the unsupported or false information is roughly equal to the accurate information in the post or link. Finally, use this rating for news articles that are based on unconfirmed information.
+• “Mixture of True and False: Some elements of the information are
+factually accurate, but some elements or claims are not. This rating
+should be used when speculation or unfounded claims are mixed with real
+events, numbers, quotes, etc., or when the headline of the link being
+shared makes a false claim but the text of the story is largely
+accurate. It should also only be used when the unsupported or false
+information is roughly equal to the accurate information in the post or
+link. Finally, use this rating for news articles that are based on
+unconfirmed information.
 
-• “Mostly False: Most or all of the information in the post or in the link being shared is inaccurate. This should also be used when the central claim being made is false.
+• “Mostly False: Most or all of the information in the post or in the
+link being shared is inaccurate. This should also be used when the
+central claim being made is false.
 
-• “No Factual Content: This rating is used for posts that are pure opinion, comics, satire, or any other posts that do not make a factual claim. This is also the category to use for posts that are of the “Like this if you think...” variety.
+• “No Factual Content: This rating is used for posts that are pure
+opinion, comics, satire, or any other posts that do not make a factual
+claim. This is also the category to use for posts that are of the “Like
+this if you think…” variety.
 
 DATA SOURCE:
 
-All nine pages have earned the verified blue checkmark from Facebook. The additional data gathered was Facebook engagement numbers (shares, comments, and reactions). Each posts was noted whether it was a link, photo, video, or text The data comes from Kaggle( <https://www.kaggle.com/mrisdal/fact-checking-facebook-politics-pages>.) It was submitted by a journalists from the news site Buzzfeed News and the original story was ( “Hyperpartisan Facebook Pages Are Publishing False And Misleading Information At An Alarming Rate” )
+All nine pages have earned the verified blue checkmark from Facebook.
+The additional data gathered was Facebook engagement numbers (shares,
+comments, and reactions). Each posts was noted whether it was a link,
+photo, video, or text The data comes from Kaggle(
+<https://www.kaggle.com/mrisdal/fact-checking-facebook-politics-pages>.)
+It was submitted by a journalists from the news site Buzzfeed News and
+the original story was ( “Hyperpartisan Facebook Pages Are Publishing
+False And Misleading Information At An Alarming Rate” )
 
 ``` r
 library(digest)
-```
-
-    ## Warning: package 'digest' was built under R version 3.4.4
-
-``` r
 library(dplyr)
 ```
-
-    ## Warning: package 'dplyr' was built under R version 3.4.4
 
     ## 
     ## Attaching package: 'dplyr'
@@ -40,27 +66,15 @@ library(dplyr)
 
 ``` r
 library(tidyr)
-```
-
-    ## Warning: package 'tidyr' was built under R version 3.4.4
-
-``` r
 library(readr)
-```
-
-    ## Warning: package 'readr' was built under R version 3.4.4
-
-``` r
 library(ggplot2)
 ```
 
-    ## Warning: package 'ggplot2' was built under R version 3.4.4
+    ## Warning: package 'ggplot2' was built under R version 3.5.1
 
 ``` r
 library(scales)
 ```
-
-    ## Warning: package 'scales' was built under R version 3.4.4
 
     ## 
     ## Attaching package: 'scales'
@@ -71,17 +85,37 @@ library(scales)
 
 ``` r
 library(gmodels)
+
+#fb<-read.csv("file:///C:/Users/John/Documents/R/fact-checking-facebook-politics-pages/facebook-fact-check.csv")
+fb <- read.csv("file://facebook_fact_check.csv")
+str(fb)
 ```
 
-    ## Warning: package 'gmodels' was built under R version 3.4.4
-
-``` r
-fb<-read.csv("file:///C:/Users/John/Documents/R/fact-checking-facebook-politics-pages/facebook-fact-check.csv")
-```
+    ## 'data.frame':    2282 obs. of  12 variables:
+    ##  $ account_id    : num  1.84e+14 1.84e+14 1.84e+14 1.84e+14 1.84e+14 ...
+    ##  $ post_id       : num  1.04e+15 1.04e+15 1.04e+15 1.04e+15 1.04e+15 ...
+    ##  $ Category      : Factor w/ 3 levels "left","mainstream",..: 2 2 2 2 2 2 2 2 2 2 ...
+    ##  $ Page          : Factor w/ 9 levels "ABC News Politics",..: 1 1 1 1 1 1 1 1 1 1 ...
+    ##  $ Post.URL      : Factor w/ 2282 levels "https://www.facebook.com/ABCNewsPolitics/posts/1035057923259100",..: 1 2 3 4 5 6 7 8 9 10 ...
+    ##  $ Date.Published: Factor w/ 7 levels "2016-09-19","2016-09-20",..: 1 1 1 1 1 1 1 1 1 1 ...
+    ##  $ Post.Type     : Factor w/ 4 levels "link","photo",..: 4 1 1 1 4 1 4 1 1 4 ...
+    ##  $ Rating        : Factor w/ 4 levels "mixture of true and false",..: 4 3 3 3 3 3 3 3 3 3 ...
+    ##  $ Debate        : Factor w/ 2 levels "","yes": 1 1 1 1 1 1 1 1 1 1 ...
+    ##  $ share_count   : int  NA 1 34 35 568 23 46 7 7 152 ...
+    ##  $ reaction_count: int  146 33 63 170 3188 28 409 62 39 278 ...
+    ##  $ comment_count : int  15 34 27 86 2815 21 105 64 6 59 ...
 
 DATA WRANGLING:
 
-The data was not very messy. I did have to rename some features. Account id, post id, and the post url were integers that were changed to character strings. Date Published was a factor that was changed to a date. There were a few NAs that had to be changed in the columns share count, reaction count, and the comment count. The NAs were changed to the median instead of the mean, because the outliers of all of these columns caused each of them to be heavily skewed to the right. New assignments for variables were created for visualization designs. Order changes are for creating trendlines for certain features.
+The data was not very messy. I did have to rename some features. Account
+id, post id, and the post url were integers that were changed to
+character strings. Date Published was a factor that was changed to a
+date. There were a few NAs that had to be changed in the columns share
+count, reaction count, and the comment count. The NAs were changed to
+the median instead of the mean, because the outliers of all of these
+columns caused each of them to be heavily skewed to the right. New
+assignments for variables were created for visualization designs. Order
+changes are for creating trendlines for certain features.
 
 ``` r
 #Renameing features
@@ -113,7 +147,11 @@ fb$Rating <- factor(fb$Rating, levels = c("no factual content", "mostly false", 
 fb$Category<- factor(fb$Category, levels = c("left","mainstream","right"),ordered = TRUE)
 ```
 
-The Facebook data was initially acquired to find out the source or sources of the false news that was becoming mainstream news at that time. Some of the more interesting points were where the false news was coming from, the medium that was used, and what kinds of posts got the most reactions.
+The Facebook data was initially acquired to find out the source or
+sources of the false news that was becoming mainstream news at that
+time. Some of the more interesting points were where the false news was
+coming from, the medium that was used, and what kinds of posts got the
+most reactions.
 
 ``` r
 summary(fb)
@@ -152,7 +190,9 @@ summary(fb)
     ##  Max.   :1088995   Max.   :456458   Max.   :159047.0  
     ## 
 
-The summary give an excellent break down of the amount reactions that seven days of posts created for just nine Facebbooks pages. All of the counts were heavily left skewed.
+The summary give an excellent break down of the amount reactions that
+seven days of posts created for just nine Facebbooks pages. All of the
+counts were heavily left skewed.
 
 ``` r
 #check which types of stories recieved more engagement
@@ -295,7 +335,12 @@ CrossTable(x=fb$Post.Type,y=fb$Rating)
     ## 
     ## 
 
-The false news came from both right-wing and left-wing news sites, where the smallest percentage came from the major mainstream news sites. Mainstream created the majority of the posts, but they also carried the most truth. The total number of posts ranked was 2282, and the ranking of those post were 1669 mostly true, 104 mostly false, 245 mixture of true and false, and 264 posts with no factual content.
+The false news came from both right-wing and left-wing news sites, where
+the smallest percentage came from the major mainstream news sites.
+Mainstream created the majority of the posts, but they also carried the
+most truth. The total number of posts ranked was 2282, and the ranking
+of those post were 1669 mostly true, 104 mostly false, 245 mixture of
+true and false, and 264 posts with no factual content.
 
 ``` r
 ggplot(fb,aes(x=Category,y = percent(1), fill= Rating))+
@@ -304,7 +349,7 @@ ggplot(fb,aes(x=Category,y = percent(1), fill= Rating))+
   theme(axis.title.y =element_blank())
 ```
 
-![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-5-1.png)
+![](facebook_factcheck_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
 
 ``` r
 ggplot(fb, aes(x=Page,fill= Rating))+
@@ -313,7 +358,7 @@ ggplot(fb, aes(x=Page,fill= Rating))+
   ggtitle("Truth Ratings for Indivdual Pages")
 ```
 
-![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-5-2.png)
+![](facebook_factcheck_files/figure-gfm/unnamed-chunk-5-2.png)<!-- -->
 
 ``` r
 fals_tags<-fb[fb$Rating=="mostly false",]
@@ -323,7 +368,20 @@ ggplot(data = fals_tags)+
   ggtitle("Mostly False based Left vs. Right")
 ```
 
-![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-5-3.png) The main stream sites created 1145 posts. With 0.7% ranked as a mixture of true and false, and no post ranked as mostly false. Politico had the highest mixture of true and false at 0.4%, but they also had the highest truth ranking at 98.5%. Politico had the lowest amount of no factual content than any other site. Of the 666 posts created by the right 37.7% were mostly false (25.4%) and a mixture of true and false (12.3%). The site creating the highest number of false posts among all the sites came from Right Wing News with a mostly false at 33.2% and a mixture of true and false at 9.7% of its 286 posts totaling 52.9% of their posts. The left-wing sites created 471 posts of which 19.1% were mostly false (4.7%) and a mixture of true and false (14.7%). The highest number of false left-wing posts were created by Addicting Info with 23.6% of their 141 posts being false (5.7%) and a mixture of true and false (17.9%).
+![](facebook_factcheck_files/figure-gfm/unnamed-chunk-5-3.png)<!-- -->
+The main stream sites created 1145 posts. With 0.7% ranked as a mixture
+of true and false, and no post ranked as mostly false. Politico had the
+highest mixture of true and false at 0.4%, but they also had the highest
+truth ranking at 98.5%. Politico had the lowest amount of no factual
+content than any other site. Of the 666 posts created by the right 37.7%
+were mostly false (25.4%) and a mixture of true and false (12.3%). The
+site creating the highest number of false posts among all the sites came
+from Right Wing News with a mostly false at 33.2% and a mixture of true
+and false at 9.7% of its 286 posts totaling 52.9% of their posts. The
+left-wing sites created 471 posts of which 19.1% were mostly false
+(4.7%) and a mixture of true and false (14.7%). The highest number of
+false left-wing posts were created by Addicting Info with 23.6% of their
+141 posts being false (5.7%) and a mixture of true and false (17.9%).
 
 ``` r
 ggplot(fb,aes(x=Rating, group=Page))+
@@ -341,7 +399,7 @@ ggplot(fb,aes(x=Rating, group=Page))+
         scale_fill_discrete(labels=c("Mixture of True and False","Mostly False","Mostly True","No Factual Content"))
 ```
 
-![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-6-1.png)
+![](facebook_factcheck_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
 
 ``` r
 ggplot(fb,aes(x=Rating, group=Category))+
@@ -359,7 +417,19 @@ ggplot(fb,aes(x=Rating, group=Category))+
         scale_fill_discrete(labels=c("Mixture of True and False","Mostly False","Mostly True","No Factual Content"))
 ```
 
-![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-6-2.png) The reaction to the various posts is also interesting. The total count of shares, comments, and reactions (likes, upvotes, and emojis) was 22,361,852. The posts with no factual content received the most reactions (10,160,570) followed by the post that were ranked mostly true (8,235,169), third was mostly false (5,863,038), and last was a mixture of true and false (2,932,433). The links received the most attention with 4,277,061 reactions, 2,161,886 shares, and 551,922 comments. The photos were a close second with 5,196,202 reactions, 3,144,489 shares, and 174,497 comments. The videos received a lot of attention also with 2,758,187 reactions, 3,646,836 shares, and 450,418 comments. Interestingly, the text did not receive nearly as much attention as the rest at 205 reactions, 11 shares, and 138 comments.
+![](facebook_factcheck_files/figure-gfm/unnamed-chunk-6-2.png)<!-- -->
+The reaction to the various posts is also interesting. The total count
+of shares, comments, and reactions (likes, upvotes, and emojis) was
+22,361,852. The posts with no factual content received the most
+reactions (10,160,570) followed by the post that were ranked mostly true
+(8,235,169), third was mostly false (5,863,038), and last was a mixture
+of true and false (2,932,433). The links received the most attention
+with 4,277,061 reactions, 2,161,886 shares, and 551,922 comments. The
+photos were a close second with 5,196,202 reactions, 3,144,489 shares,
+and 174,497 comments. The videos received a lot of attention also with
+2,758,187 reactions, 3,646,836 shares, and 450,418 comments.
+Interestingly, the text did not receive nearly as much attention as the
+rest at 205 reactions, 11 shares, and 138 comments.
 
 ``` r
 ggplot(fb,aes(x=Rating,y= reaction_count,color= Category))+
@@ -370,7 +440,7 @@ ggplot(fb,aes(x=Rating,y= reaction_count,color= Category))+
 
     ## Warning: Ignoring unknown parameters: fun
 
-![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-7-1.png)
+![](facebook_factcheck_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
 
 ``` r
 ggplot(fb,aes(x=Rating,y= share_count,color= Category))+
@@ -381,7 +451,7 @@ ggplot(fb,aes(x=Rating,y= share_count,color= Category))+
 
     ## Warning: Ignoring unknown parameters: fun
 
-![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-7-2.png)
+![](facebook_factcheck_files/figure-gfm/unnamed-chunk-7-2.png)<!-- -->
 
 ``` r
 ggplot(fb,aes(x=Rating,y= comment_count,color= Category))+
@@ -392,9 +462,12 @@ ggplot(fb,aes(x=Rating,y= comment_count,color= Category))+
 
     ## Warning: Ignoring unknown parameters: fun
 
-![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-7-3.png)
+![](facebook_factcheck_files/figure-gfm/unnamed-chunk-7-3.png)<!-- -->
 
-The days of the posts did not show any real difference to reactions, comments, or shares. But on September 21, 2016 a video from a the left leaning site "Occupy Democrats" had the most attention with over 1.7 million reactions, comments, and shares.
+The days of the posts did not show any real difference to reactions,
+comments, or shares. But on September 21, 2016 a video from a the left
+leaning site “Occupy Democrats” had the most attention with over 1.7
+million reactions, comments, and shares.
 
 ``` r
 ggplot(fb, aes(x=Date.Published, y= Total_count))+
@@ -402,7 +475,7 @@ ggplot(fb, aes(x=Date.Published, y= Total_count))+
   ggtitle("Total Counts on Posted Dates")
 ```
 
-![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-8-1.png)
+![](facebook_factcheck_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
 
 ``` r
 fb%>% group_by(Date.Published,Rating) %>% 
@@ -410,9 +483,7 @@ summarise(posts=length(Rating)) %>% ggplot(aes(as.Date(Date.Published),posts,col
 geom_line(size=1.5)+geom_point() + xlab("Date") + ylab("Posts") + ggtitle("Number of posts with Time ")
 ```
 
-    ## Warning: package 'bindrcpp' was built under R version 3.4.4
-
-![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-8-2.png)
+![](facebook_factcheck_files/figure-gfm/unnamed-chunk-8-2.png)<!-- -->
 
 ``` r
 fb%>% group_by(Category,Rating) %>% 
@@ -420,7 +491,7 @@ summarise(posts=length(Rating)) %>% ggplot(aes(as.numeric(Category),posts,col=Ra
 geom_line(size=1.5)+geom_point() + xlab("Date") + ylab("Posts") + ggtitle("Number of posts with Time ")
 ```
 
-![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-8-3.png)
+![](facebook_factcheck_files/figure-gfm/unnamed-chunk-8-3.png)<!-- -->
 
 ``` r
 ggplot(fb, aes(Date.Published, group = Category)) + 
@@ -431,81 +502,70 @@ ggplot(fb, aes(Date.Published, group = Category)) +
   ggtitle("Activity of Posts")
 ```
 
-![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-8-4.png)
+![](facebook_factcheck_files/figure-gfm/unnamed-chunk-8-4.png)<!-- -->
 
 ``` r
 #ggplot(fb,aes(Rating,col=left))+
  # geom_bar()
 ```
 
-Here we see that " mostly true" posts made up the majority of the total posts.
+\#Here we see that " mostly true" posts made up the majority of the
+total posts.
 
 ``` r
-ggplot(fb,aes(x=Post.Type,y= reaction_count, col=Rating))+
-  geom_point(position = "jitter")+
-  facet_grid(Post.Type ~ Rating)+
-  coord_cartesian(ylim=c(0,50000))+
-   theme( axis.text.x.bottom = element_blank())+
+ggplot(fb,aes(x = Post.Type,y = reaction_count, col = Rating)) +
+  geom_point(position = "jitter") +
+  facet_grid(Post.Type ~ Rating) +
+  coord_cartesian(ylim = c(0,50000)) +
+  theme( axis.text.x.bottom = element_blank()) +
   ggtitle("Truth Ratings Based on Post Type")
 ```
 
-![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-9-1.png)
+![](facebook_factcheck_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
 
 ``` r
-ggplot(data=fb)+
-  geom_point(mapping= aes(x=Post.Type, y= Total_count, position= "dodge"))+
-  facet_wrap( ~ Rating,nrow = 2)+
-  coord_cartesian(ylim=c(0,80000))+
-  ggtitle("Truth Ratings for Post Types")
+#
+## problem with Total_count
+#ggplot(data = fb) +
+#  geom_point(mapping = aes(x = Post.Type, y = Total_count, position = "dodge")) +
+#  facet_wrap( ~ Rating,nrow = 2) +
+#  coord_cartesian(ylim = c(0,80000)) +
+#  ggtitle("Truth Ratings for Post Types")
+#
+#
+#ggplot(fb) +
+#  geom_point(mapping = aes(x = reaction_count,y = Total_count)) +
+#  facet_grid(.~Rating) +
+#  xlim(0,50000) +
+#  ylim(0,50000) +
+#  labs(x = "") +
+#  theme(axis.ticks = element_blank(), 
+#        axis.text = element_blank()) +
+#  ggtitle("Reactions of the pages Based On Truth")
+#
+#vals <- c(89.53222,122.31655,11.76975)
+#val_names <- sprintf("%s(%s)", c("Share Count","Reaction Count"," Comment Count"),scales::percent(round(vals/sum(vals),digits = 4)))
+#names(vals) <- val_names
+#
+#waffle::waffle(vals, rows = 8) +
+#  ggthemes::scale_fill_tableau(name = NULL) +
+#  ggtitle("Total Count") +
+#  labs(x = " 1 square = 100,000")
+#
+#
+#
+#ggplot(fb,aes( x = Post.Type,y = Total_count, fill = Category)) +
+#  geom_col() +
+#  facet_grid(Post.Type ~ Rating) +
+#  coord_cartesian(ylim = c(0,50000)) +
+#  # theme( axis.text.x.bottom = element_blank()) +
+#  ggtitle("Truth Ratings Based on Post Type")
+#
 ```
 
-    ## Warning: Ignoring unknown aesthetics: position
+From these graphs we see very little reactions, shares, comments to
+texts,and photos and links have the majority. Mostly true and no factual
+content getting most of the attention.
 
-![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-9-2.png)
-
-``` r
-ggplot(fb)+
-  geom_point(mapping = aes(x= reaction_count,y= Total_count))+
-  facet_grid(.~Rating)+
-  xlim(0,50000)+
-  ylim(0,50000)+
-  labs(x="")+
-  theme(axis.ticks = element_blank(), 
-        axis.text = element_blank())+
-  ggtitle("Reactions of the pages Based On Truth")
-```
-
-    ## Warning: Removed 141 rows containing missing values (geom_point).
-
-![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-9-3.png)
-
-``` r
-vals<- c(89.53222,122.31655,11.76975)
-val_names<- sprintf("%s(%s)", c("Share Count","Reaction Count"," Comment Count"),scales::percent(round(vals/sum(vals),digits=4)))
-names(vals)<-val_names
-
-waffle::waffle(vals, rows=8)+
-  ggthemes::scale_fill_tableau(name=NULL)+
-  ggtitle("Total Count")+
-  labs(x=" 1 square = 100,000")
-```
-
-    ## Scale for 'fill' is already present. Adding another scale for 'fill',
-    ## which will replace the existing scale.
-
-![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-9-4.png)
-
-``` r
-ggplot(fb,aes( x= Post.Type,y=Total_count, fill=Category))+
-  geom_col()+
-  facet_grid(Post.Type ~ Rating)+
-  coord_cartesian(ylim=c(0,50000))+
-   theme( axis.text.x.bottom = element_blank())+
-  ggtitle("Truth Ratings Based on Post Type")
-```
-
-![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-9-5.png)
-
-From these graphs we see very little reactions, shares, comments to texts,and photos and links have the majority. Mostly true and no factual content getting most of the attention.
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+Note that the `echo = FALSE` parameter was added to the code chunk to
+prevent printing of the R code that generated the plot.
