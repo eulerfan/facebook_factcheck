@@ -98,13 +98,13 @@ rating_table<-table(fb$Rating,dnn = "Percentage Proportions")
 rating_pcrt<- prop.table(rating_table)*100
 round(rating_pcrt,digits = 1)
 
-CrossTable(x=fb$Category,y=fb$Rating)
+CrossTable(x=fb$Category,y=fb$Rating,chisq = TRUE)
 
-CrossTable(x=fb$Post.Type,y=fb$Rating)
+CrossTable(x=fb$Rating,y=fb$Post.Type,chisq = TRUE)
 
 
 ```
-
+With such a high chi-squared and a low p-value, we must reject the probabilty of independence of the two variables. For example, there is a high probability that "No factual content" would be a photo.
 
 The false news came from both right-wing and left-wing news sites, where the smallest percentage came from the major mainstream news sites. Mainstream created the majority of the posts, but they also carried the most truth. The total number of posts ranked was 2282, and the ranking of those post were 1669 mostly true, 104 mostly false, 245 mixture of true and false, and 264 posts with no factual content.
 ```{r}
