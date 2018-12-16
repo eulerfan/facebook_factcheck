@@ -76,6 +76,23 @@ library(gmodels)
     ## Warning: package 'gmodels' was built under R version 3.4.4
 
 ``` r
+library(psych)
+```
+
+    ## Warning: package 'psych' was built under R version 3.4.4
+
+    ## 
+    ## Attaching package: 'psych'
+
+    ## The following objects are masked from 'package:scales':
+    ## 
+    ##     alpha, rescale
+
+    ## The following objects are masked from 'package:ggplot2':
+    ## 
+    ##     %+%, alpha
+
+``` r
 fb<-read.csv("file:///C:/Users/John/Documents/R/fact-checking-facebook-politics-pages/facebook-fact-check.csv")
 ```
 
@@ -105,7 +122,7 @@ no_tags<-fb[fb$Rating=="no factual content",]
 
 Acount<-fb[fb$Page == "Addicting info",]
 left<- fb[fb$Category=="left",]
-mainsteam<-fb[fb$Category=="mainstream",]
+mainstream<-fb[fb$Category=="mainstream",]
 right<- fb[fb$Category=="right",]
 
 #order changes
@@ -386,8 +403,9 @@ ggplot(fb,aes(x=Rating, group=Category))+
 
 ``` r
 ggplot(fb,aes(x=Rating,y= reaction_count,color= Category))+
-  geom_boxplot(coef=3, fun = median)+
-  coord_cartesian(ylim=c(0,100000))+
+  geom_boxplot( fun = median)+
+  coord_cartesian(ylim=c(0,50000))+
+    geom_smooth(aes(x=as.numeric(Rating),y= reaction_count,color= Category),method=lm,                  se = FALSE) +
   ggtitle("Ratings vs. Reaction Count")
 ```
 
@@ -398,7 +416,8 @@ ggplot(fb,aes(x=Rating,y= reaction_count,color= Category))+
 ``` r
 ggplot(fb,aes(x=Rating,y= share_count,color= Category))+
   geom_boxplot(coef=3, fun = median)+
-  coord_cartesian(ylim=c(0,100000))+
+  coord_cartesian(ylim=c(0,50000))+
+   geom_smooth(aes(x=as.numeric(Rating),y= share_count,color= Category),method=lm,                  se = FALSE) +
   ggtitle("Ratings vs. Share Count")
 ```
 
@@ -409,7 +428,8 @@ ggplot(fb,aes(x=Rating,y= share_count,color= Category))+
 ``` r
 ggplot(fb,aes(x=Rating,y= comment_count,color= Category))+
   geom_boxplot(coef=3, fun = median)+
-  coord_cartesian(ylim=c(0,7500))+
+  coord_cartesian(ylim=c(0,5000))+
+   geom_smooth(aes(x=as.numeric(Rating),y= comment_count,color= Category),method=lm,                  se = FALSE) +
   ggtitle("Ratings vs. Comment Count")
 ```
 
@@ -457,8 +477,19 @@ ggplot(fb, aes(Date.Published, group = Category)) +
 ![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-8-4.png)
 
 ``` r
-#ggplot(fb,aes(Rating,col=left))+
- # geom_bar()
+pairs.panels(fb[10:12],lm=TRUE, xlim= c(0,30000),ylim=c(0,30000), density = TRUE)
+```
+
+    ## Warning in rug(x): some values will be clipped
+
+    ## Warning in rug(x): some values will be clipped
+
+    ## Warning in rug(x): some values will be clipped
+
+![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-8-5.png)
+
+``` r
+#pairs.panels(fals_tags[c(left,mainstream,right)],lm=TRUE, xlim= c(0,30000),ylim=c(0,30000), density = TRUE)
 ```
 
 Here we see that " mostly true" posts made up the majority of the total posts.
