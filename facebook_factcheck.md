@@ -405,7 +405,7 @@ ggplot(fb,aes(x=Rating, group=Category))+
 ggplot(fb,aes(x=Rating,y= reaction_count,color= Category))+
   geom_boxplot( fun = median)+
   coord_cartesian(ylim=c(0,50000))+
-    geom_smooth(aes(x=as.numeric(Rating),y= reaction_count,color= Category),method=lm,                  se = FALSE) +
+    geom_smooth(aes(x=as.numeric(Rating),y= reaction_count,color= Category),method=lm,se = FALSE) +
   ggtitle("Ratings vs. Reaction Count")
 ```
 
@@ -414,16 +414,56 @@ ggplot(fb,aes(x=Rating,y= reaction_count,color= Category))+
 ![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-7-1.png)
 
 ``` r
+ggplot(right,aes(x= Rating,y= reaction_count))+
+  geom_boxplot()+
+  geom_smooth(aes(as.numeric(Rating), y= reaction_count),method=lm, se= FALSE)+
+  coord_cartesian(ylim =c(0,10000))+
+  ggtitle("Right's Rating vs. Reaction Count")
+```
+
+![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-7-2.png)
+
+``` r
+ggplot(mainstream,aes(x= Rating,y= reaction_count))+
+  geom_boxplot()+
+  geom_smooth(aes(as.numeric(Rating), y= reaction_count),method=lm, se= FALSE)+
+  coord_cartesian(ylim =c(0,5000))+
+  ggtitle("Mainstream's Rating vs. Reaction Count")
+```
+
+![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-7-3.png) we can see that the Left gets more reactions, comments, and shares than either the Right or the Mainstream. Also notice that because the Mainstream had virtually no " mostly false posts", that the rating does not measure.
+
+``` r
 ggplot(fb,aes(x=Rating,y= share_count,color= Category))+
   geom_boxplot(coef=3, fun = median)+
   coord_cartesian(ylim=c(0,50000))+
-   geom_smooth(aes(x=as.numeric(Rating),y= share_count,color= Category),method=lm,                  se = FALSE) +
+   geom_smooth(aes(x=as.numeric(Rating),y= share_count,color= Category),method=lm,se = FALSE) +
   ggtitle("Ratings vs. Share Count")
 ```
 
     ## Warning: Ignoring unknown parameters: fun
 
-![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-7-2.png)
+![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-8-1.png)
+
+``` r
+ggplot(right,aes(x= Rating,y= share_count))+
+  geom_boxplot()+
+  geom_smooth(aes(as.numeric(Rating), y= share_count),method=lm, se= FALSE)+
+  coord_cartesian(ylim =c(0,10000))+
+  ggtitle("Right's Rating vs. Share Count")
+```
+
+![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-8-2.png)
+
+``` r
+ggplot(mainstream,aes(x= Rating,y= share_count))+
+  geom_boxplot()+
+  geom_smooth(aes(as.numeric(Rating), y= share_count),method=lm, se= FALSE)+
+  coord_cartesian(ylim =c(0,5000))+
+  ggtitle("Mainstream's Rating vs. Share Count")
+```
+
+![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-8-3.png)
 
 ``` r
 ggplot(fb,aes(x=Rating,y= comment_count,color= Category))+
@@ -435,7 +475,27 @@ ggplot(fb,aes(x=Rating,y= comment_count,color= Category))+
 
     ## Warning: Ignoring unknown parameters: fun
 
-![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-7-3.png)
+![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-9-1.png)
+
+``` r
+ggplot(right,aes(x= Rating,y= comment_count))+
+  geom_boxplot()+
+  geom_smooth(aes(as.numeric(Rating), y= comment_count),method=lm, se= FALSE)+
+  coord_cartesian(ylim =c(0,4000))+
+  ggtitle("Right's Rating vs. Comment Count")
+```
+
+![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-9-2.png)
+
+``` r
+ggplot(mainstream,aes(x= Rating,y= comment_count))+
+  geom_boxplot()+
+  geom_smooth(aes(as.numeric(Rating), y= comment_count),method=lm, se= FALSE)+
+  coord_cartesian(ylim =c(0,4000))+
+  ggtitle("Mainstream's Rating vs. Comment Count")
+```
+
+![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-9-3.png)
 
 The days of the posts did not show any real difference to reactions, comments, or shares. But on September 21, 2016 a video from a the left leaning site "Occupy Democrats" had the most attention with over 1.7 million reactions, comments, and shares.
 
@@ -445,7 +505,7 @@ ggplot(fb, aes(x=Date.Published, y= Total_count))+
   ggtitle("Total Counts on Posted Dates")
 ```
 
-![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-8-1.png)
+![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-10-1.png)
 
 ``` r
 fb%>% group_by(Date.Published,Rating) %>% 
@@ -455,15 +515,7 @@ geom_line(size=1.5)+geom_point() + xlab("Date") + ylab("Posts") + ggtitle("Numbe
 
     ## Warning: package 'bindrcpp' was built under R version 3.4.4
 
-![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-8-2.png)
-
-``` r
-fb%>% group_by(Category,Rating) %>% 
-summarise(posts=length(Rating)) %>% ggplot(aes(as.numeric(Category),posts,col=Rating)) +
-geom_line(size=1.5)+geom_point() + xlab("Date") + ylab("Posts") + ggtitle("Number of posts with Time ")
-```
-
-![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-8-3.png)
+![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-10-2.png)
 
 ``` r
 ggplot(fb, aes(Date.Published, group = Category)) + 
@@ -474,7 +526,7 @@ ggplot(fb, aes(Date.Published, group = Category)) +
   ggtitle("Activity of Posts")
 ```
 
-![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-8-4.png)
+![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-10-3.png)
 
 ``` r
 pairs.panels(fb[10:12],lm=TRUE, xlim= c(0,30000),ylim=c(0,30000), density = TRUE)
@@ -486,13 +538,13 @@ pairs.panels(fb[10:12],lm=TRUE, xlim= c(0,30000),ylim=c(0,30000), density = TRUE
 
     ## Warning in rug(x): some values will be clipped
 
-![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-8-5.png)
+![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-10-4.png)
 
 ``` r
 #pairs.panels(fals_tags[c(left,mainstream,right)],lm=TRUE, xlim= c(0,30000),ylim=c(0,30000), density = TRUE)
 ```
 
-Here we see that " mostly true" posts made up the majority of the total posts.
+Here we see that " mostly true" posts made up the majority of the total posts. In our panel graph, we can see positve correlations among share, reaction, and comment counts. Share and comment haveing the highest correlation(.91), then reaction and share (.85), and last but still positive is comment and share (.69).
 
 ``` r
 ggplot(fb,aes(x=Post.Type,y= reaction_count, col=Rating))+
@@ -503,7 +555,7 @@ ggplot(fb,aes(x=Post.Type,y= reaction_count, col=Rating))+
   ggtitle("Truth Ratings Based on Post Type")
 ```
 
-![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-9-1.png)
+![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-11-1.png)
 
 ``` r
 ggplot(data=fb)+
@@ -515,7 +567,7 @@ ggplot(data=fb)+
 
     ## Warning: Ignoring unknown aesthetics: position
 
-![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-9-2.png)
+![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-11-2.png)
 
 ``` r
 ggplot(fb)+
@@ -531,7 +583,7 @@ ggplot(fb)+
 
     ## Warning: Removed 141 rows containing missing values (geom_point).
 
-![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-9-3.png)
+![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-11-3.png)
 
 ``` r
 vals<- c(89.53222,122.31655,11.76975)
@@ -547,7 +599,7 @@ waffle::waffle(vals, rows=8)+
     ## Scale for 'fill' is already present. Adding another scale for 'fill',
     ## which will replace the existing scale.
 
-![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-9-4.png)
+![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-11-4.png)
 
 ``` r
 ggplot(fb,aes( x= Post.Type,y=Total_count, fill=Category))+
@@ -558,7 +610,7 @@ ggplot(fb,aes( x= Post.Type,y=Total_count, fill=Category))+
   ggtitle("Truth Ratings Based on Post Type")
 ```
 
-![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-9-5.png)
+![](facebook_factcheck_files/figure-markdown_github/unnamed-chunk-11-5.png)
 
 From these graphs we see very little reactions, shares, comments to texts,and photos and links have the majority. Mostly true and no factual content getting most of the attention.
 

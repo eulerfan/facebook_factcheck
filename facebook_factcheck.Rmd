@@ -170,20 +170,67 @@ The reaction to the various posts is also interesting. The total count of shares
 ggplot(fb,aes(x=Rating,y= reaction_count,color= Category))+
   geom_boxplot( fun = median)+
   coord_cartesian(ylim=c(0,50000))+
-    geom_smooth(aes(x=as.numeric(Rating),y= reaction_count,color= Category),method=lm,                  se = FALSE) +
+    geom_smooth(aes(x=as.numeric(Rating),y= reaction_count,color= Category),method=lm,se = FALSE) +
   ggtitle("Ratings vs. Reaction Count")
+
+ggplot(right,aes(x= Rating,y= reaction_count))+
+  geom_boxplot()+
+  geom_smooth(aes(as.numeric(Rating), y= reaction_count),method=lm, se= FALSE)+
+  coord_cartesian(ylim =c(0,10000))+
+  ggtitle("Right's Rating vs. Reaction Count")
+
+ggplot(mainstream,aes(x= Rating,y= reaction_count))+
+  geom_boxplot()+
+  geom_smooth(aes(as.numeric(Rating), y= reaction_count),method=lm, se= FALSE)+
+  coord_cartesian(ylim =c(0,5000))+
+  ggtitle("Mainstream's Rating vs. Reaction Count")
+
+```
+we can see that the Left gets more reactions, comments, and shares than either the Right or the Mainstream. Also notice that because the Mainstream had virtually no " mostly false posts", that the rating does not measure.  
+```{r}
+
 
 ggplot(fb,aes(x=Rating,y= share_count,color= Category))+
   geom_boxplot(coef=3, fun = median)+
   coord_cartesian(ylim=c(0,50000))+
-   geom_smooth(aes(x=as.numeric(Rating),y= share_count,color= Category),method=lm,                  se = FALSE) +
+   geom_smooth(aes(x=as.numeric(Rating),y= share_count,color= Category),method=lm,se = FALSE) +
   ggtitle("Ratings vs. Share Count")
+
+ggplot(right,aes(x= Rating,y= share_count))+
+  geom_boxplot()+
+  geom_smooth(aes(as.numeric(Rating), y= share_count),method=lm, se= FALSE)+
+  coord_cartesian(ylim =c(0,10000))+
+  ggtitle("Right's Rating vs. Share Count")
+
+ggplot(mainstream,aes(x= Rating,y= share_count))+
+  geom_boxplot()+
+  geom_smooth(aes(as.numeric(Rating), y= share_count),method=lm, se= FALSE)+
+  coord_cartesian(ylim =c(0,5000))+
+  ggtitle("Mainstream's Rating vs. Share Count")
+
+```
+
+```{r}
+
 
 ggplot(fb,aes(x=Rating,y= comment_count,color= Category))+
   geom_boxplot(coef=3, fun = median)+
   coord_cartesian(ylim=c(0,5000))+
    geom_smooth(aes(x=as.numeric(Rating),y= comment_count,color= Category),method=lm,                  se = FALSE) +
   ggtitle("Ratings vs. Comment Count")
+
+ggplot(right,aes(x= Rating,y= comment_count))+
+  geom_boxplot()+
+  geom_smooth(aes(as.numeric(Rating), y= comment_count),method=lm, se= FALSE)+
+  coord_cartesian(ylim =c(0,4000))+
+  ggtitle("Right's Rating vs. Comment Count")
+
+ggplot(mainstream,aes(x= Rating,y= comment_count))+
+  geom_boxplot()+
+  geom_smooth(aes(as.numeric(Rating), y= comment_count),method=lm, se= FALSE)+
+  coord_cartesian(ylim =c(0,4000))+
+  ggtitle("Mainstream's Rating vs. Comment Count")
+
 ```
 
 The days of the posts did not show any real difference to reactions, comments, or shares. But on September 21, 2016 a video from a the left leaning site "Occupy Democrats"
@@ -194,12 +241,9 @@ ggplot(fb, aes(x=Date.Published, y= Total_count))+
   geom_point()+
   ggtitle("Total Counts on Posted Dates")
 
+
 fb%>% group_by(Date.Published,Rating) %>% 
 summarise(posts=length(Rating)) %>% ggplot(aes(as.Date(Date.Published),posts,col=Rating)) +
-geom_line(size=1.5)+geom_point() + xlab("Date") + ylab("Posts") + ggtitle("Number of posts with Time ")
-
-fb%>% group_by(Category,Rating) %>% 
-summarise(posts=length(Rating)) %>% ggplot(aes(as.numeric(Category),posts,col=Rating)) +
 geom_line(size=1.5)+geom_point() + xlab("Date") + ylab("Posts") + ggtitle("Number of posts with Time ")
 
 ggplot(fb, aes(Date.Published, group = Category)) + 
@@ -218,6 +262,7 @@ pairs.panels(fb[10:12],lm=TRUE, xlim= c(0,30000),ylim=c(0,30000), density = TRUE
 ```
 
 Here we see that " mostly true" posts made up the majority of the total posts.
+In our panel graph, we can see positve correlations among share, reaction, and comment counts. Share and comment haveing the highest correlation(.91), then reaction and share (.85), and last but still positive is comment and share (.69).   
 ```{r}
 
 
